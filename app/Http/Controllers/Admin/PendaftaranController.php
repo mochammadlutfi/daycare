@@ -16,6 +16,7 @@ use Image;
 
 use App\Models\User;
 use App\Models\Anak;
+use App\Models\Invoice;
 
 class PendaftaranController extends Controller
 {
@@ -106,28 +107,18 @@ class PendaftaranController extends Controller
      */
     public function show($id)
     {
-        $data = Dukungan::with(['kota', 'kecamatan', 'kelurahan', 'user'])
+        $data = Anak::with(['user' => function($q){
+            return $q->with('detail');
+        }, 'kelompok'
+        ])
         ->where('id', $id)->first();
 
-        return Inertia::render('Dukungan/Show', [
+        $invoice = Invoice::with(['user', 'anak', 'detail'])
+        ->where('anak_id', $id)->orderBy('id', 'ASC')->first();
+
+        return Inertia::render('Pendaftaran/Show', [
             'data' => $data,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-
-        $value = Dukungan::with(['kota', 'kecamatan', 'kelurahan'])
-        ->where('id', $id)->first();
-
-        return Inertia::render('Dukungan/Form',[
-            'editMode' => true,
-            'value' => $value
+            'invoice' => $invoice
         ]);
     }
 
@@ -164,6 +155,10 @@ class PendaftaranController extends Controller
                 $data = Anak::where('id', $id)->first();
                 $data->kelompok_id = $request->kelompok_id;
                 $data->status = ($request->status == 'terima') ? 'Aktif' : 'Tolak';
+                $data->alasan = $request->alasan;
+                if($request->status == 'terima'){
+                    $data->tgl_terima = Carbon::now();
+                }
                 $data->save();
 
             }catch(\QueryException $e){
@@ -217,8 +212,11 @@ class PendaftaranController extends Controller
 
         $data = Anak::with(['user' => function($q){
             return $q->with('detail');
-        }, 'kelompok', 'invoice'
+        }, 'kelompok', 'invoice' => function($q){
+            return $q->latest()->first();
+        }
         ])
+        ->whereHas('invoice')
         ->whereNull('kelompok_id')
         ->where('status','!=' ,'Aktif')
         ->orderBy('id', 'DESC')->paginate($limit);

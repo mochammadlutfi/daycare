@@ -12,16 +12,19 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Redirect;
 use Storage;
+use PDF;
 
 use App\Models\UserDetail;
 use App\Models\Anak;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
-use Midtrans\Notification;
 use Carbon\Carbon;
+use App\Models\Paket;
+use App\Notifications\RegisterNotification;
 class RegisterController extends Controller
 {
     /**
@@ -96,20 +99,26 @@ class RegisterController extends Controller
     public function detail()
     {
 
-        $data = auth()->guard('web')->user()->detail;
+        $user = auth()->guard('web')->user();
+
+
+        if($user->anak->count()){
+            return redirect()->route('user.anak.index');
+        }
+        $data = $user->detail;
 
         $biaya = collect([
-            'pembangunan' => (int)settings()->get('pembangunan') ?? 0,
-            'pendaftaran' => (int)settings()->get('pendaftaran') ?? 0,
-            'spp' => (int)settings()->get('spp') ?? 0,
             'denda' => (int)settings()->get('denda') ?? 0,
             'laundry' => (int)settings()->get('laundry') ?? 0,
             'antar_jemput' => (int)settings()->get('antar_jemput') ?? 0,
         ]);
 
+        $paket = Paket::orderBy('id', 'ASC')->get();
+
         return Inertia::render('Register/Detail',[
             'value' => $data,
             'biaya' => $biaya,
+            'paket' => $paket,
             'editMode' => $data ? true : false,
         ]);
     }
@@ -299,6 +308,7 @@ class RegisterController extends Controller
                 $data->isAntarJemput = $request->isLaundry ? 1 : 0;
                 $data->isLaundry = $request->isAntarJemput ? 1 : 0;
                 $data->scan_akte = $akteDir ?? $request->scan_akte_anak;
+                $data->paket_id = $request->paket_id;
                 $data->status = 'Pending';
                 $data->save();
 
@@ -360,16 +370,24 @@ class RegisterController extends Controller
                 $invoice->ref = $snapToken;
                 $invoice->save();
 
+                $pdfData = Invoice::with(['user','detail'])->where('id', $invoice->id)
+                ->first();
+        
+                $invoiceFile = PDF::loadView('pdf.invoice', [
+                    'data' => $pdfData,
+                ], [ ], [
+                    'format' => 'A4-P'
+                ]);
+        
+                Notification::route('mail', $user->email)
+                ->notify(new RegisterNotification($invoiceFile->output(), $pdfData));
             }catch(\QueryException $e){
                 DB::rollback();
                 return back();
             }
             DB::commit();
-            // return redirect()->route('user.invoice.show', $invoice->id);
-            // return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/833dca3c-7246-47ca-9976-3958598e4bad');
 
             return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/'. $snapToken);
-            // return 
         }
     }
 

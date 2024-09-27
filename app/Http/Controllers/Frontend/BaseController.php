@@ -5,15 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-
-use App\Models\Wilayah\Kelurahan;
-use App\Models\Wilayah\Kecamatan;
-use App\Models\Wilayah\Kota;
-use App\Models\Wilayah\Provinsi;
-use App\Models\Dapil;
-
-
-use App\Models\DukunganLevel;
+use App\Models\Paket;
 
 class BaseController extends Controller
 {
@@ -89,10 +81,9 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dukunganLevel(Request $request)
+    public function paket(Request $request)
     {
-        $id = $request->id;
-        $data = DukunganLevel::orderBy('id', 'ASC')->get();
+        $data = Paket::orderBy('id', 'ASC')->get();
 
         return response()->json($data);
     }

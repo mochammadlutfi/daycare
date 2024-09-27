@@ -1,130 +1,430 @@
 <template>
-    <base-layout title="Detail Relawan">
+    <base-layout>
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
-                <span>Detail Saksi</span>
+                <span>Detail Anak</span>
                 <div class="space-x-1">
-                    <a :href="route('admin.saksi.edit', {id : data.id})" class="ep-button">
-                        <i class="si si-note me-1"></i>
-                        Ubah Saksi
-                    </a>
-                    <el-button type="danger" @click.prevent="hapus(data.id)">
-                        <i class="si si-trash me-1"></i>
-                        Hapus Saksi
-                    </el-button>
+                    <template v-if="data.status == 'Pending'">
+                        <el-button @click="openModal('terima')" type="primary">
+                            <i class="fa fa-check me-2"></i>
+                            Terima
+                        </el-button>
+                        <el-button @click="openModal('tolak')" type="danger">
+                            <i class="fa fa-close me-2"></i>
+                            Tolak
+                        </el-button>
+                    </template>
                 </div>
             </div>
-            <div class="block block-rounded block-bordered">
-                <div class="block-content p-3">
-                    <div class="border-bottom border-2 mb-4">
-                        <h3 class="h5 mb-2">1. Informasi Personal</h3>
+            <el-tabs v-model="activeTab" class="block rounded-2" @tab-click="updateTab" stretch>
+                <el-tab-pane label="Informasi Anak" name="anak">
+                    <div class="block-content">
+                        <el-row :gutter="20">
+                            <el-col :md="12">
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Nama Lengkap</el-col>
+                                    <el-col :md="14">
+                                        : <span class="fw-semibold">{{ data.nama }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Nama Panggilan</el-col>
+                                    <el-col :md="14">
+                                        : <span class="fw-semibold">{{ data.username }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Jenis Kelamin</el-col>
+                                    <el-col :md="14">
+                                        : <span class="fw-semibold">{{ (data.jk == 'L' ? 'Laki-Laki' : 'Perempuan') }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Tempat / Tanggal Lahir</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.tmp_lahir }} / {{ data.tgl_lahir }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Usia</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ get_umur(data.tgl_lahir) }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Anak Ke</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.anak_ke }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Jarak Rumah</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.jarak }} Km</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Alamat</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.alamat }}</span>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :md="12">
+                                
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Sosialisasi dengan lingkungan</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan_anak }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Sakit yang pernah diderita</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita_anak }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Makanan yang disukai</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.makanan_yang_disukai_anak }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Makanan yang tidak disukai</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai_anak }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Memiliki Alergi</el-col>
+                                    <el-col :md="14">
+                                        :  <span class="fw-semibold">{{ data.memiliki_alergi_anak }}</span>
+                                    </el-col>
+                                </el-row>
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :md="10">Scan Akta Kelahiran</el-col>
+                                    <el-col :md="14">
+                                        :  
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-row>
                     </div>
-                    <el-row :gutter="32">
-                        <el-col :span="7">
-                            <div class="mb-3">
-                                <p class="mb-0">Foto</p>
-                                <div class="text-center">
-                                    <img :src="getImage" class="w-50">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <p class="mb-0">KTP</p>
-                                <div class="text-center">
-                                    <img :src="getKTP" class="w-100">
-                                </div>
-                            </div>
+                </el-tab-pane>
+                <el-tab-pane label="Informasi Orang Tua/Wali" name="ortu">
+                    <div class="block-content">
+                    <el-row :gutter="20">
+                        <el-col :md="12">
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Nama Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.nama_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Tempat / Tanggal Lahir Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.tmp_lahir_ayah }} /
+                                        {{ data.user.detail.tgl_lahir_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">No HP Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.telp_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Pendidkan Terakhir Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.pendidikan_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Agama Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.agama_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Alamat Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.alamat_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Pekerjaan Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.pekerjaan_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Penghasilan Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.penghasilan_ayah }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Alamat Kantor Ayah</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.alamat_kantor_ayah }}</span>
+                                </el-col>
+                            </el-row>
                         </el-col>
-                        <el-col :span="17">
-                            <el-descriptions :column="1" border>
-                                <el-descriptions-item label="NIK">{{ data.nik }}</el-descriptions-item>
-                                <el-descriptions-item label="Nama Lengkap">{{ data.nama }}</el-descriptions-item>
-                                <el-descriptions-item label="Jenis Kelamin">{{ (data.jk == 'L') ? 'Laki-Laki' : 'Perempuan' }}</el-descriptions-item>
-                                <el-descriptions-item label="Tempat / Tanggal Lahir">{{ data.tmp_lahir }} / {{  format_date(data.tgl_lahir) }}</el-descriptions-item>
-                                <el-descriptions-item label="No Handphone">{{ data.phone }}</el-descriptions-item>
-                                <el-descriptions-item label="Email">{{ data.email }}</el-descriptions-item>
-                                <el-descriptions-item label="Alamat Lengkap">
-                                    {{ data.alamat }}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="TPS">{{ data.tps }}</el-descriptions-item>
-                                <el-descriptions-item label="RT / RW">{{ data.rt }}/{{ data.rw }}</el-descriptions-item>
-                                <el-descriptions-item label="Kelurahan">{{ data.kelurahan.nama }}</el-descriptions-item>
-                                <el-descriptions-item label="Kecamatan">{{ data.kecamatan.nama }}</el-descriptions-item>
-                                <el-descriptions-item label="Kota">{{ data.kota.nama }}</el-descriptions-item>
-                                <!-- <el-descriptions-item label="Caleg">{{ data.user.name }}</el-descriptions-item> -->
-                            </el-descriptions>
+                        <el-col :md="12">
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Nama Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.nama_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Tempat / Tanggal Lahir Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.tmp_lahir_ibu }} /
+                                        {{ data.user.detail.tgl_lahir_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">No HP Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.telp_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Pendidkan Terakhir Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.pendidikan_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Agama Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.agama_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Alamat Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.alamat_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Pekerjaan Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.pekerjaan_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Penghasilan Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.penghasilan_ibu }}</span>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :md="10">Alamat Kantor Ibu</el-col>
+                                <el-col :md="14">
+                                    : <span class="fw-semibold">{{ data.user.detail.alamat_kantor_ibu }}</span>
+                                </el-col>
+                            </el-row>
                         </el-col>
                     </el-row>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="Informasi Pembayaran" name="invoice">
+                <div class="block-content p-4" :style="{'background': `url(${ invoice.status == 'paid' ? '/images/paid.png' : '/images/unpaid.png' }) no-repeat center center`}">
+                    <el-row :gutter="20" justify="space-between">
+                        <el-col :lg="12">
+                            <h2 class="fw-bold fs-5 mb-2">Informasi Dasar</h2>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Nomor</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ invoice.nomor }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Tanggal</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ format_date(invoice.tgl) }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Tanggal Tempo</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ format_date(invoice.tgl_tempo) }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Status</el-col>
+                                <el-col :lg="16">
+                                    <span class="badge bg-success" v-if="invoice.status == 'paid'">
+                                        Lunas
+                                    </span>
+                                    <span class="badge bg-danger" v-else>
+                                        Belum Bayar
+                                    </span>
+                                </el-col>
+                            </el-row>
+                        </el-col>
+                        <el-col :lg="12">
+                            <h2 class="fw-bold fs-5 mb-2">Informasi Pengguna</h2>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Nama</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ invoice.user.nama }}</div>
+                                </el-col>
+                            </el-row>
+                        </el-col>
+                    </el-row>
+                    <div class="table-responsive push">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th class="text-center" style="width: 60px;"></th>
+                                    <th>Keterangan</th>
+                                    <th class="text-end" style="width: 120px;">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr  v-for="(d, i) in invoice.detail" :key="i">
+                                    <td class="text-center">{{ i+1 }}</td>
+                                    <td>
+                                        <p class="fw-semibold mb-1">{{ d.tipe }}</p>
+                                        <div class="text-muted">
+
+                                        </div>
+                                    </td>
+                                    <td class="text-end">{{ currency(d.harga) }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" class="fw-bold text-uppercase text-end">Total</td>
+                                    <td class="fw-bold text-end">{{ currency(invoice.total)}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
-            </div>
+                </el-tab-pane>
+            </el-tabs>
+            
         </div>
+        <el-dialog v-model="showModal" :title="modalTitle" width="40%">
+            <el-form :model="form" label-position="top">
+                <template v-if="form.status == 'terima'">
+                    <el-form-item label="Kelompok" :error="errors.kelompok_id" :usia="ageInMonths">
+                        <select-kelompok v-model="form.kelompok_id"/>
+                    </el-form-item>
+                </template>
+                <template v-else>
+                    <el-form-item label="Alasan" :error="errors.alasan">
+                        <el-input type="textarea" v-model="form.alasan"/>
+                    </el-form-item>
+                </template>
+                <div class="text-end">
+                    <el-button @click="closeModal">
+                        <i class="fa fa-close me-2"></i>
+                        Batal
+                    </el-button>
+                    <el-button type="primary" @click="submit">
+                        <i class="fa fa-check me-2"></i>
+                        Simpan
+                    </el-button>
+                </div>
+            </el-form>
+        </el-dialog>
     </base-layout>
 </template>
+
 <script>
-import moment from 'moment';
+import SelectKelompok from '@/Components/SelectKelompok.vue';
+import dayjs from 'dayjs';
 export default {
     components : {
+        SelectKelompok
+    },
+    props :{
+        data : {
+            type : Object
+        },
+        invoice : {
+            type : Object
+        },
+        errors : {
+            type : Object,
+        }
     },
     data(){
         return {
-            active : 0,
-            isLoading : false,
-            listRekrutan: [],
+            showModal : false,
+            modalTitle : 'Terima Pendaftaran',
+            loadingForm : false,
+            form : {
+                kelompok_id : null,
+                status : null,
+                alasan : null,
+            },
+            activeTab : 'anak',
+            ageInMonths : null,
         }
     },
-    props : {
-        data : Object,
+    mounted() {
+        const birthDate = new dayjs(this.data.tgl_lahir);
+        const specificDate = new dayjs();
+        this.ageInMonths = specificDate.diff(birthDate, 'month');
     },
-    computed : {
-        getImage(){
-            if(this.data.image){
-                return this.data.image;
-            }
-            return "/media/placeholder/avatar.jpg";
+    methods :{
+        openModal(status){
+            this.form.status = status;
+            this.showModal = true;
+            this.modalTitle = (status == 'terima') ? 'Terima Pendaftaran' : 'Tolak Pendaftaran';
         },
-        getKTP(){
-            if(this.data.ktp){
-                return this.data.ktp;
-            }
-            return "/media/placeholder/ktp.jpg";
-        }
-    },
-    methods : {
-        setMenu(index){
-            this.active = index;
+        closeModal(){
+            this.modalTitle = 'Terima Pendaftaran';
+            this.form.status = null;
+            this.form.kelompok_id = null;
+            this.form.alasan = null;
+            this.showModal = false;
         },
-        zeroPad(num) {
-            return num.toString().padStart(3, "0");
+        updateTab(tab, event){
+            console.log(tab, event)
         },
-        percentage(number, total){
-            var percent = (parseInt(number)/total)* 100
-            return Math.round(percent);
-        },
-        format_date(value) {
-            if (value) {
-                moment().locale('id');
-                return moment(String(value)).format('DD MMMM YYYY')
-            }
-        },
-        hapus(id){
-            ElMessageBox.alert('Data yang dihapus tidak bisa dikembalikan!', 'Peringatan', {
-                showCancelButton: true,
-                confirmButtonText: 'Ya!',
-                cancelButtonText: 'Tidak!',
-                type: 'warning',
-            })
-            .then(() => {
-                this.$inertia.delete(this.route('admin.saksi.delete', {id : id}), {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.fetchData();
-                        ElMessage({
-                            type: 'success',
-                            message: 'Data Berhasil Dihapus!',
-                        });
-                    },
-                });
+        submit() {
+            this.loadingForm = true;
+            let form = this.$inertia.form(this.form);
+            form.post(this.route('admin.register.update', {id : this.data.id}), {
+                preserveScroll: true,
+                onFinish:() => {
+                    this.loadingForm = false;
+                },
+                onSuccess: () => {
+                    ElMessage({
+                        type: 'success',
+                        message: 'Data Berhasil Disimpan!',
+                    });
+                    this.onCloseForm();
+                },
             });
         },
+        format_date(value){
+            if (value) {
+                return dayjs(String(value)).format('DD MMM YYYY')
+            }
+        },
+        get_umur(tgl){
+            if(this.ageInMonths > 12){
+                const birthDate = new dayjs(tgl);
+                const specificDate = new dayjs();
+                const ageInYear = specificDate.diff(birthDate, 'year');
+
+                return ageInYear + ' Tahun ' +(this.ageInMonths - (12 * ageInYear)) + ' Bulan';
+            }else{
+                return (this.ageInMonths /12) + ' Bulan';
+            }
+
+        }
     }
 }
 </script>

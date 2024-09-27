@@ -124,6 +124,7 @@
                     'page-header-fixed': true,
                     'enable-page-overlay' : true,
                     'sidebar-o': this.sidebar,
+                    'sidebar-o-xs': this.sidebar,
                 }
             },
         },

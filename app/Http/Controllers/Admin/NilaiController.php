@@ -147,8 +147,8 @@ class NilaiController extends Controller
     {
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
-        $limit = ($request->limit) ? $request->limit : 25;
         $paging = !empty($request->page) ? true : false;
+        $page = $request->page;
 
         $elq = Nilai::with(['kelompok', 'kegiatan', 'jenis', 'admin'])
         ->when($request->q, function($query, $search){
@@ -161,8 +161,8 @@ class NilaiController extends Controller
         })
         ->orderBy($sort, $sortDir);
         
-        if($paging){
-            $data = $elq->paginate($request->page);
+        if($page){
+            $data = $elq->paginate(1);
         }else{
             $data = $elq->get();
         }

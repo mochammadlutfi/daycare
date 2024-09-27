@@ -130,11 +130,39 @@ class KelompokController extends Controller
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
         $limit = ($request->limit) ? $request->limit : 25;
+        $laundry = $request->laundry;
+        $anjem = $request->anjem;
 
-        $data = Kelompok::with(['admin'])->withcount('anak')
+        $data = Kelompok::with(['admin'])
+        ->withcount(['anak' => function($query) use($laundry, $anjem) {
+            $query->when($laundry == 'true', function($q){
+                return $q->where('isLaundry', 1);
+            })
+            ->when($anjem == 'true', function($q){
+                return $q->where('isAntarJemput', 1);
+            });
+        }
+        ])
+        ->when($laundry == 'true'|| $anjem == 'true', function($q) use($laundry, $anjem){
+            return $q->whereHas('anak',  function($query) use($laundry, $anjem) {
+                $query->when($laundry == 'true', function($q){
+                    return $q->where('isLaundry', 1);
+                })
+                ->when($anjem == 'true', function($q){
+                    return $q->where('isAntarJemput', 1);
+                });
+            });
+        })
         ->when($request->search, function($q, $search){
             return $q->where('nama', 'like', '%' . $search . '%')
             ->orWhere('usia', 'like', '%' . $search . '%');
+        })
+        ->when($request->usia, function($q, $usia){
+            return $q->when($usia > 30, function($q, $usia){
+                return $q->where('usia', '=', '3 Bulan - 2,5 Tahun');
+            })->when($usia <= 30, function($q, $usia){
+                return $q->where('usia', '=', '2,5 Tahun - 6 Tahun');
+            });
         })
         ->orderBy($sort, $sortDir);
 

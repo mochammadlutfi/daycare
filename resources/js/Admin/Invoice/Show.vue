@@ -8,7 +8,16 @@
                 </div>
             </div>
             <div class="block rounded-2">
-                <div class="block-content p-4">
+                <div class="block-content p-4" :style="{'background': `url(${ data.status == 'paid' ? '/images/paid.png' : '/images/unpaid.png' }) no-repeat center center`}">
+                    <div class="text-center mb-4" v-if="data.status == 'unpaid'">
+                        <div class="fs-5 fw-bold text-dark mb-3">
+                            Segera selesaikan pembayaran sebelum tanggal {{ format_date(data.tgl_tempo) }}
+                        </div>
+                        <el-countdown format="DD [hari] HH [jam] mm [menit] ss [detik]" :value="tempo" class="mb-3"/>
+                        <a :href="`https://app.sandbox.midtrans.com/snap/v4/redirection/${data.ref}`" class="ep-button ep-button--primary" target="_blank">
+                            Bayar Sekarang
+                        </a>
+                    </div>
                     <el-row :gutter="20" justify="space-between">
                         <el-col :lg="12">
                             <h2 class="fw-bold fs-5 mb-2">Informasi Dasar</h2>
@@ -33,10 +42,10 @@
                             <el-row class="mb-2" :gutter="10">
                                 <el-col :lg="8">Status</el-col>
                                 <el-col :lg="16">
-                                    <span class="badge bg-primary" v-if="data.status == 'paid'">
+                                    <span class="badge bg-success" v-if="data.status == 'paid'">
                                         Lunas
                                     </span>
-                                    <span class="badge bg-primary" v-else>
+                                    <span class="badge bg-danger" v-else>
                                         Belum Bayar
                                     </span>
                                 </el-col>
@@ -67,9 +76,9 @@
                         </el-col>
                     </el-row>
                     <div class="table-responsive push">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered">
                             <thead>
-                                <tr>
+                                <tr class="text-dark">
                                     <th class="text-center" style="width: 60px;"></th>
                                     <th>Keterangan</th>
                                     <th class="text-end" style="width: 120px;">Jumlah</th>
@@ -88,7 +97,7 @@
                                 </tr>
                             </tbody>
                             <tfoot>
-                                <tr class="table-warning">
+                                <tr>
                                     <td colspan="2" class="fw-bold text-uppercase text-end">Total</td>
                                     <td class="fw-bold text-end">{{ currency(data.total)}}</td>
                                 </tr>

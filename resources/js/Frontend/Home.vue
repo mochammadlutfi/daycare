@@ -45,7 +45,7 @@
                 </div>
             </div>
             <el-row :gutter="20">
-                <el-col :md="12">
+                <el-col :md="8">
                     <div class="block block-rounded">
                         <div class="block-content block-content-full">
                             <div class="border-3 border-bottom d-flex justify-content-between pb-2">

@@ -42,17 +42,16 @@
                                     <div>{{ format_date(scope.row.tgl) }}</div>
                                 </template>
                             </el-table-column>
+                            <el-table-column prop="admin.nama" label="Guru"/>
                             <el-table-column label="Kelompok" width="220" header-align="center">
                                 <template #default="scope">
                                     <div>{{ scope.row.kelompok.nama }} ({{  scope.row.kelompok.usia }})</div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="admin.nama" label="Guru"/>
-                            <el-table-column prop="jenis.nama" label="Jenis Kegiatan"/>
-                            <el-table-column prop="kegiatan.nama" label="Kegiatan"/>
+                            <el-table-column prop="anak.nama" label="Anak"/>
                             <el-table-column label="Aksi" align="center" width="180">
                                 <template #default="scope">
-                                    <a :href="route('admin.nilai.show', { id :scope.row.id})" class="ep-button ep-button--primary">
+                                    <a :href="route('admin.raport.show', { id :scope.row.id})" class="ep-button ep-button--primary">
                                         <i class="fa fa-eye me-1"></i>
                                         Detail
                                     </a>
@@ -118,7 +117,7 @@ export default {
             var page = (page == undefined) ? 1 : page;
             try {
                 this.isLoading = true;
-                const response = await axios.get(this.route("admin.nilai.data"),{
+                const response = await axios.get(this.route("admin.raport.data"),{
                     params: {
                         page : page,
                         limit : this.params.limit,

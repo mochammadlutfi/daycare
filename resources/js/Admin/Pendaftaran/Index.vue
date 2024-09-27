@@ -45,7 +45,7 @@
                         </el-table-column>
                         <el-table-column label="Status Pembayaran">
                             <template #default="scope">
-                                    <span class="badge bg-primary" v-if="scope.row.invoice.status == 'paid'">
+                                    <span class="badge bg-success" v-if="scope.row.invoice[0].status == 'paid'">
                                         Lunas
                                     </span>
                                     <span class="badge bg-danger" v-else>
@@ -55,7 +55,7 @@
                         </el-table-column>
                         <el-table-column label="Aksi" align="center" width="180">
                             <template #default="scope">
-                                <a :href="route('admin.anak.show', {id : scope.row.id})" class="ep-button ep-button--primary">
+                                <a :href="route('admin.register.show', {id : scope.row.id})" class="ep-button ep-button--primary">
                                     <i class="si si-eye me-2"></i>
                                     Detail
                                 </a>

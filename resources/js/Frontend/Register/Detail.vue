@@ -219,6 +219,7 @@
                                             <el-date-picker v-model="formAnak.tgl_lahir" type="date" placeholder="Tanggal Lahir"
                                                 format="DD-MM-YYYY" value-format="YYYY-MM-DD" style="width: 100%" />
                                         </el-form-item>
+                                        <span class="fs-xs">Tanggal Bisa Diketik atau dipilih (DD-MM-YYYY)</span>
                                     </el-col>
                                 </el-row>
                                 <el-form-item label="Jarak Rumah Ke Daycare" :error="errors_anak.jarak">
@@ -253,35 +254,102 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <div class="border-bottom border-2 mb-4">
-                            <h3 class="h5 mb-2">Layanan Tambahan</h3>
-                        </div>
-                        <div class="form-check form-block mb-4">
-                            <input class="form-check-input" type="checkbox" v-model="form.isLaundry" id="isLaundry" name="isLaundry">
-                            <label class="form-check-label" for="isLaundry">
-                                <span class="d-flex align-items-center">
-                                <span class="ms-2">
-                                    <span class="fw-bold">Layanan Laundry</span>
-                                    <span class="d-block fs-sm text-muted">Dihitung dalam satuan kilo gram</span>
-                                    <span class="d-block fs-sm text-muted">{{ currency(biaya.laundry) }} x Berat Cucian</span>
-                                </span>
-                                </span>
-                            </label>
-                        </div>
-                        <div class="form-check form-block">
-                            <input class="form-check-input" type="checkbox" v-model="form.isAntarJemput" id="isAntarJemput" name="isAntarJemput">
-                            <label class="form-check-label" for="isAntarJemput">
-                                <span class="d-flex align-items-center">
-                                <span class="ms-2">
+                    </div>
+                </el-form>
+                <div class="block-content" v-else-if="step == 3">
+                    <el-row :gutter="20" justify="center">
+                        <el-col :md="8" v-for="d in paket" :key="d.id">
+                            <div class="form-check form-block">
+                                <input type="radio" class="form-check-input" :value="d.id" name="paket" :id="`paket-${d.id}`" @change="changePaket(d)" v-model="formAnak.paket_id">
+                                <label class="form-check-label p-0" :for="`paket-${d.id}`">
+                                    <div class="block">
+                                        <div class="block-content bg-body-light border-bottom border-3">
+                                            <h3 class="block-title fw-semibold">
+                                                {{ d.nama }}
+                                            </h3>
+                                            <p>{{ d.usia }}</p>
+                                        </div>
+                                        <div class="block-content px-3 pt-3">
+                                            <div class="border-3 border-bottom d-flex justify-content-between pb-2">
+                                                <div class="space-x">
+                                                    <div class="fw-bold">Pembangunan</div>
+                                                    <div class="fs-xs">Dibayar Sekali</div>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <div class="fw-bold text-primary">
+                                                        {{ currency(d.pembangunan) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-3 border-bottom d-flex justify-content-between pb-2">
+                                                <div class="space-x">
+                                                    <div class="fw-bold">Pendaftaran</div>
+                                                    <div class="fs-xs">Dibayar Sekali</div>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <div class="fw-bold text-primary">
+                                                        {{ currency(d.pendaftaran) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-3 border-bottom d-flex justify-content-between pb-2">
+                                                <div class="space-x">
+                                                    <div class="fw-bold">SPP</div>
+                                                    <div class="fs-xs">Dibayar Setiap Bulannya</div>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <div class="fw-bold text-primary">
+                                                        {{ currency(d.spp) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <div class="space-x">
+                                                    <div class="fw-bold">Total</div>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <div class="fw-bold text-primary">
+                                                        {{ currency(d.spp+d.pembangunan+d.pendaftaran) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <div class="border-bottom border-2 mb-4">
+                        <h3 class="h5 mb-2">Layanan Tambahan</h3>
+                    </div>
+                    <div class="form-check form-block mb-4">
+                        <input class="form-check-input" type="checkbox" v-model="formAnak.isLaundry" id="isLaundry" name="isLaundry">
+                        <label class="form-check-label" for="isLaundry">
+                            <span class="d-flex align-items-center">
+                            <span class="ms-2">
+                                <span class="fw-bold">Layanan Laundry</span>
+                                <span class="d-block fs-sm text-muted">Dihitung dalam satuan kilo gram</span>
+                                <span class="d-block fs-sm text-muted">{{ currency(biaya.laundry) }} x Berat Cucian</span>
+                            </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-check form-block">
+                        <input class="form-check-input" type="checkbox" v-model="formAnak.isAntarJemput" id="isAntarJemput" name="isAntarJemput">
+                        <label class="form-check-label" for="isAntarJemput">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="ms-2">
                                     <span class="fw-bold">Layanan Antar Jemput</span>
                                     <span class="d-block fs-sm text-muted">Dihitung dalam satuan kilometer dari jarak alamat Daycare ke lokasi Penjemputan Anak</span>
                                     <span class="d-block fs-sm text-muted">{{ currency(biaya.antar_jemput) }} x {{ form.jarak  ?? 0}} km (Jarak Lokasi) x 20 hari</span>
-                                </span>
-                                </span>
-                            </label>
-                        </div>
+                                </div>
+                                <div class="fs-3 fw-bold">
+                                    {{ currency(biaya.antar_jemput * formAnak.jarak * 20) }}
+                                </div>
+                            </div>
+                        </label>
                     </div>
-                </el-form>
+                </div>
                 <div class="block-content" v-else>
                     <div class="table-responsive push">
                         <table class="table table-bordered table-hover">
@@ -299,7 +367,7 @@
                                         <p class="fw-semibold mb-1">Pembangunan</p>
                                         <div class="text-muted">Dibayar 1x ketika pendaftaran</div>
                                     </td>
-                                    <td class="text-end">{{ currency(biaya.pembangunan)}} </td>
+                                    <td class="text-end">{{ currency(selectPaket.pembangunan)}} </td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">2</td>
@@ -307,7 +375,7 @@
                                         <p class="fw-semibold mb-1">Pendaftaran</p>
                                         <div class="text-muted">Dibayar 1x ketika pendaftaran</div>
                                     </td>
-                                    <td class="text-end">{{ currency(biaya.pendaftaran) }}</td>
+                                    <td class="text-end">{{ currency(selectPaket.pendaftaran) }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">3</td>
@@ -315,7 +383,7 @@
                                         <p class="fw-semibold mb-1">SPP</p>
                                         <div class="text-muted">Perbulan</div>
                                     </td>
-                                    <td class="text-end">{{ currency(biaya.spp) }}</td>
+                                    <td class="text-end">{{ currency(selectPaket.spp) }}</td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -323,7 +391,7 @@
                                     <td colspan="2">
                                         <p class="fw-semibold mb-1">Total</p>
                                     </td>
-                                    <td class="text-end">{{ currency(biaya.pembangunan + biaya.pendaftaran + biaya.spp) }}</td>
+                                    <td class="text-end">{{ currency(selectPaket.pembangunan + selectPaket.pendaftaran + selectPaket.spp) }}</td>
                                 </tr>    
                             </tfoot>
                         </table>
@@ -331,15 +399,23 @@
                 </div>
                 <div class="block-content p-4">
                     <div class="d-flex justify-content-end">
+                        <el-button native-type="button" type="primary" @click.prevent="step = step-1" v-if="step > 1">
+                            <i class="fa fa-chevron-left me-2"></i>
+                            Kembali
+                        </el-button>
                         <el-button native-type="submit" type="primary" @click.prevent="submit()" v-if="step == 1">
                             <i class="fa fa-chevron-right me-2"></i>
                             Selanjutnya
                         </el-button>
-                        <el-button native-type="button" type="primary" @click.prevent="step = 3" v-if="step == 2">
+                        <el-button native-type="button" type="primary" @click.prevent="setPaket()" v-if="step == 2">
                             <i class="fa fa-chevron-right me-2"></i>
                             Selanjutnya
                         </el-button>
-                        <el-button native-type="submit" type="primary" @click.prevent="submitAnak()" v-if="step == 3">
+                        <el-button native-type="button" type="primary" @click.prevent="step = 4" v-if="step == 3">
+                            <i class="fa fa-chevron-right me-2"></i>
+                            Selanjutnya
+                        </el-button>
+                        <el-button native-type="submit" type="primary" @click.prevent="submitAnak()" v-if="step == 4">
                             <i class="fa fa-check me-2"></i>
                             Bayar
                         </el-button>
@@ -352,6 +428,7 @@
 
 <script>
 import SingleFileUpload from '@/Components/SingleFileUpload.vue';
+import dayjs from 'dayjs';
 export default {
     components : {
         SingleFileUpload
@@ -366,6 +443,9 @@ export default {
         },
         biaya : {
             type : Object,
+        },
+        paket : {
+            type : Array,
         },
         errors : {
             type : Object,
@@ -414,9 +494,11 @@ export default {
                 scan_akte_anak : null,
                 isAntarJemput : false,
                 isLaundry: false,
+                paket_id : null,
             },
-            step : 1,
+            step : 3,
             loading : false,
+            selectPaket : null,
             errors_anak : {},
         }
     },
@@ -486,6 +568,26 @@ export default {
                     this.errors_anak = v;
                 }
             });
+        },
+        setPaket(){
+            const birthDate = new dayjs(this.formAnak.tgl_lahir);
+            const specificDate = new dayjs();
+            const ageInMonths = specificDate.diff(birthDate, 'month');
+
+            if(ageInMonths <= 30){
+                this.formAnak.paket_id = 1;
+                this.selectPaket = this.paket[0];
+            }else{
+                this.formAnak.paket_id = 2;
+                this.selectPaket = this.paket[1];
+            }
+
+            this.step = 3;
+
+        },
+        changePaket(data){
+            console.log(data);
+            this.selectPaket = data;
         }
     }
 }

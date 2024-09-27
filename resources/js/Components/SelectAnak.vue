@@ -37,6 +37,7 @@ export default {
         },
         kelompok_id(value){
             if(value){
+                this.value = null;
                 this.fetchData();
             }
         }
@@ -56,7 +57,16 @@ export default {
         disabled: {
             type : Boolean,
             default : false,
+        },
+        laundry : {
+            type : Boolean,
+            default : false,
+        },
+        anjem : {
+            type : Boolean,
+            default : false,
         }
+
     },
     async mounted() {
         if(this.hasParent == false){
@@ -74,7 +84,9 @@ export default {
                 this.isLoading = true;
                 const response = await axios.get(this.route("admin.anak.data"),{
                     params: {
-                        kelompok_id : this.kelompok_id
+                        kelompok_id : this.kelompok_id,
+                        laundry : this.laundry,
+                        anjem : this.anjem
                     }
                 });
                 if(response.status == 200){

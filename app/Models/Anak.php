@@ -30,5 +30,12 @@ class Anak extends Model
     {
         return $this->hasMany(Invoice::class, 'anak_id');
     }
+
+    
+
+    public function invoice_last()
+    {
+        return $this->hasMany(Invoice::class, 'anak_id')->latest()->first();
+    }
     
 }

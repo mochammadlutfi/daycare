@@ -17,6 +17,10 @@ use Image;
 use App\Models\User;
 use App\Models\Anak;
 
+
+use Excel;
+use App\Exports\AnakExport;
+
 class AnakController extends Controller
 {
 
@@ -229,6 +233,14 @@ class AnakController extends Controller
 
     }
 
+    public function report(Request $request)
+    {
+        $kelompok = $request->kelompok;
+        $paket = $request->paket;
+
+        return Excel::download(new AnakExport($kelompok, $paket), 'Data Anak.xlsx');
+    }
+
     public function data(Request $request)
     {
         $sort = !empty($request->sort) ? $request->sort : 'id';
@@ -242,6 +254,12 @@ class AnakController extends Controller
         })
         ->when($request->kelompok_id, function($query, $kelompok_id){
             $query->where('kelompok_id', '=',$kelompok_id);
+        })
+        ->when($request->laundry == 'true', function($query, $laundry){
+            $query->where('isLaundry', '=', 1);
+        })
+        ->when($request->anjem == 'true', function($query, $jemput){
+            $query->where('isAntarJemput', '=', 1);
         })
         ->where('status', 'Aktif')
         ->orderBy($sort, $sortDir);

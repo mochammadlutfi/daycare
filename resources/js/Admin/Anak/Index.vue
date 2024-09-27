@@ -4,6 +4,10 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Anak</span>
                 <div class="space-x-1">
+                    <el-button type="primary" @click.prevent="exportModal = true">
+                        <i class="fa fa-print me-1"></i>
+                        Export
+                    </el-button>
                 </div>
             </div>
             <div class="block rounded bordered" v-loading="isLoading" >
@@ -63,14 +67,35 @@
                 </div>
             </div>
         </div>
+        <el-dialog v-model="exportModal" title="Export" width="500">
+            <el-form label-width="30%" @submit.prevent="getReport" target="_blank" label-position="top">
+                <el-form-item class="mb-4" label="Kelompok">
+                    <select-kelompok name="kelompok" v-model="form.kelompok"/>
+                </el-form-item>
+                <el-form-item class="mb-4" label="Paket">
+                    <select-paket name="paket" v-model="form.paket"/>
+                </el-form-item>
+
+                <div class="d-flex">
+                    <div class="float-end">
+                        <el-button @click="exportModal = false">Batal</el-button>
+                        <el-button type="primary" native-type="submit">
+                            Download
+                        </el-button>
+                    </div>
+                </div>
+            </el-form>
+        </el-dialog>
     </base-layout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import SelectKelompok from '@/Components/SelectKelompok.vue';
+import SelectPaket from '@/Components/SelectPaket.vue';
+
+import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
 import moment from 'moment';
-import { router } from '@inertiajs/vue3'
 
 const data = ref([]);
 const isLoading = ref(true);
@@ -81,6 +106,12 @@ const from = ref(0);
 const to = ref(0);
 const page = ref(1);
 const pageSize = ref(0);
+const exportModal = ref(false);
+
+const form = reactive({
+    kelompok : null,
+    paket : null,
+});
 
 const fetchData = async (pg) => {
   try {
@@ -136,6 +167,11 @@ const hapus = (id) => {
     });
   });
 };
+
+const getReport = () => {
+    window.open(route('admin.anak.report', form), '_blank');
+}
+
 onMounted(() => {
   fetchData();
 });

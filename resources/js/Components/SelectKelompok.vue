@@ -8,6 +8,7 @@
     autocomplete="off"
     :disabled="disabled"
     :loading="isLoading"
+    :name="name"
     placeholder="Pilih">
         <el-option
             v-for="item in dataList"
@@ -40,6 +41,22 @@ export default {
         disabled : {
             type : Boolean,
             default : false,
+        },
+        laundry : {
+            type : Boolean,
+            default : false,
+        },
+        usia : {
+            type : Number,
+            default : null,
+        },
+        anjem : {
+            type : Boolean,
+            default : false,
+        },
+        name: {
+            type : String,
+            default : ''
         }
     },
     async mounted() {
@@ -51,7 +68,9 @@ export default {
                 this.isLoading = true;
                 const response = await axios.get(this.route("admin.kelompok.data"),{
                     params: {
-                        
+                        usia : this.usia,
+                        laundry : this.laundry,
+                        anjem : this.anjem
                     }
                 });
                 if(response.status == 200){

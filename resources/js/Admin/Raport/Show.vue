@@ -2,14 +2,25 @@
     <base-layout title="Detail Penilaian">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
-                <span>Detail Penilaian</span>
+                <span>Detail Raport</span>
                 <div class="space-x-1">
-
+                    <a :href="route('admin.raport.pdf', {id : data.id})" class="ep-button ep-button--primary">
+                        <i class="fa fa-download me-1"></i>
+                        Download PDF
+                    </a>
+                    <a :href="route('admin.raport.edit', {id : data.id})" class="ep-button ep-button--primary">
+                        <i class="si si-note me-1"></i>
+                        Ubah
+                    </a>
+                    <el-button type="danger" @click.prevent="hapus(data.id)">
+                        <i class="si si-trash me-1"></i>
+                        Hapus
+                    </el-button>
                 </div>
             </div>
             <div class="block rounded-2">
                 <div class="block-content p-4">
-                    <el-row :gutter="20" justify="space-between">
+                    <el-row :gutter="20" justify="space-between" class="mb-4">
                         <el-col :lg="12">
                             <el-row class="mb-2" :gutter="10">
                                 <el-col :lg="8">Tanggal</el-col>
@@ -23,54 +34,60 @@
                                     <div class="fw-semibold">{{ data.kelompok.nama }} ({{ data.kelompok.usia }})</div>
                                 </el-col>
                             </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Anak</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ data.anak.nama }}</div>
+                                </el-col>
+                            </el-row>
                         </el-col>
                         <el-col :lg="12">
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Jenis Kegiatan</el-col>
+                                <el-col :lg="8">Tinggi Badan</el-col>
                                 <el-col :lg="16">
-                                    <div class="fw-semibold">{{ data.jenis.nama }}</div>
+                                    <div class="fw-semibold">{{ data.tinggi }} CM</div>
                                 </el-col>
                             </el-row>
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Kegiatan</el-col>
+                                <el-col :lg="8">Berat Badan</el-col>
                                 <el-col :lg="16">
-                                    <div class="fw-semibold">{{ data.kegiatan.nama }}</div>
+                                    <div class="fw-semibold">{{ data.berat }} Kg</div>
                                 </el-col>
                             </el-row>
                         </el-col>
                     </el-row>
                     <div class="table-responsive push">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" style="width: 60px;"></th>
-                                    <th>Anak</th>
-                                    <th class="text-end" style="width: 120px;">Penilaian</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-bordered">
                             <tbody>
-                                <tr  v-for="(d, i) in data.detail" :key="i">
-                                    <td class="text-center">{{ i+1 }}</td>
-                                    <td>
-                                        <p class="fw-semibold mb-1">{{ d.anak.nama }}</p>
-                                        <div class="text-muted">
-
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <span class="badge bg-danger" v-if="d.nilai == 'BB'">
-                                            Belum Berkembang
-                                        </span>
-                                        <span class="badge bg-warning" v-else-if="d.nilai == 'MB'">
-                                            Mulai Berkembang
-                                        </span>
-                                        <span class="badge bg-info" v-else-if="d.nilai == 'BSH'">
-                                            Berkembang Sesuai Harapan
-                                        </span>
-                                        <span class="badge bg-success" v-else-if="d.nilai == 'BSB'">
-                                            Berkembang Sangat Baik
-                                        </span>
-                                    </td>
+                                <tr class="">
+                                    <td class="fw-bold">Perkembangan Nilai Agama dan Moral</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ data.perkembangan_nilai_agama_dan_moral}}</td>
+                                </tr>
+                                <tr class="">
+                                    <td class="fw-bold">Perkembangan Sosial dan Emosional</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ data.perkembangan_sosial_emosional}}</td>
+                                </tr>
+                                <tr class="">
+                                    <td class="fw-bold">Perkembangan Fisik dan Motorik</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ data.perkembangan_fisik_motorik}}</td>
+                                </tr>
+                                <tr class="">
+                                    <td class="fw-bold">Perkembangan Kognitif</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ data.perkembangan_kognitif}}</td>
+                                </tr>
+                                <tr class="">
+                                    <td class="fw-bold">Perkembangan Bahasa</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ data.perkembangan_bahasa}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -114,10 +131,9 @@ export default {
                 type: 'warning',
             })
             .then(() => {
-                this.$inertia.delete(this.route('admin.saksi.delete', {id : id}), {
+                this.$inertia.delete(this.route('admin.raport.delete', {id : id}), {
                     preserveScroll: true,
                     onSuccess: () => {
-                        this.fetchData();
                         ElMessage({
                             type: 'success',
                             message: 'Data Berhasil Dihapus!',

@@ -34,7 +34,7 @@ Route::namespace('Frontend')->group(function(){
 
     });
     
-    Route::middleware('auth:web')->group(function () {
+    Route::middleware(['auth:web'])->group(function () {
 
         Route::namespace('Auth')->group(function () {
             Route::post('/logout','LoginController@logout')->name('logout');
@@ -43,9 +43,13 @@ Route::namespace('Frontend')->group(function(){
             ->middleware('auth')
             ->name('verification.notice');
             
-            Route::get('/verify-email/{id}/{hash}','EmailVerificationPromptController@__invoke')
+            Route::get('/verify-email/{id}/{hash}','VerifyEmailController@__invoke')
             ->middleware(['auth', 'signed', 'throttle:6,1'])
             ->name('verification.verify');
+
+            Route::post('/email/verification-notification','EmailVerificationNotificationController@store')
+            ->middleware(['throttle:6,1'])
+            ->name('verification.send');
 
             Route::get('/pendaftaran/detail','RegisterController@detail')->name('register.detail');
             Route::post('/pendaftaran/detail','RegisterController@detailStore');
@@ -53,8 +57,12 @@ Route::namespace('Frontend')->group(function(){
         });
 
         Route::prefix('/user')->name('user.')
-        // ->middleware('check.user.details')
+        ->middleware(['verified', 'check.user.details'])
         ->group(function () {
+            route::get('/', function () {    
+                return redirect()->route('user.dashboard');
+            });
+
             Route::get('/dashboard','DashboardController@index')
             ->name('dashboard');
 
@@ -104,6 +112,24 @@ Route::namespace('Frontend')->group(function(){
             Route::prefix('/aktivitas')->name('aktivitas.')->group(function () {
                 Route::get('/', 'AktivitasController@index')->name('index');
                 Route::get('/data', 'AktivitasController@data')->name('data');
+            });
+
+            Route::prefix('/raport')->name('raport.')->group(function () {
+                Route::get('/', 'RaportController@index')->name('index');
+                Route::get('/data', 'RaportController@data')->name('data');
+                Route::get('/{id}', 'RaportController@show')->name('show');
+                Route::get('/{id}/pdf', 'RaportController@pdf')->name('pdf');
+            });
+            
+            Route::prefix('/laundry')->name('laundry.')->group(function () {
+                Route::get('/', 'LaundryController@index')->name('index');
+                Route::get('/data', 'LaundryController@data')->name('data');
+            });
+
+            
+            Route::prefix('/antarjemput')->name('antarjemput.')->group(function () {
+                Route::get('/', 'AntarJemputController@index')->name('index');
+                Route::get('/data', 'AntarJemputController@data')->name('data');
             });
         });
 
@@ -166,7 +192,7 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/create', 'AnakController@create')->name('create');
             Route::post('/store','AnakController@store')->name('store');
             Route::get('/data', 'AnakController@data')->name('data');
-            Route::get('/slug', 'AnakController@check_slug')->name('slug');
+            Route::get('/report', 'AnakController@report')->name('report');
             Route::get('/{id}', 'AnakController@show')->name('show');
             Route::get('/{id}/edit','AnakController@edit')->name('edit');
             Route::post('/{id}/update','AnakController@update')->name('update');
@@ -308,6 +334,7 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/{id}/edit','RaportController@edit')->name('edit');
             Route::post('/{id}/update','RaportController@update')->name('update');
             Route::delete('/{id}/hapus','RaportController@destroy')->name('delete');
+            Route::get('/{id}/pdf', 'RaportController@pdf')->name('pdf');
         });
 
 

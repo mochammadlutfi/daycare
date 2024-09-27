@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -71,5 +72,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function invoice()
     {
         return $this->hasMany(Invoice::class, 'user_id');
+    }
+
+    
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail); // Use your custom notification
     }
 }
