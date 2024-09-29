@@ -102,7 +102,7 @@ class RegisterController extends Controller
         $user = auth()->guard('web')->user();
 
 
-        if($user->anak->count()){
+        if($user->anak){
             return redirect()->route('user.anak.index');
         }
         $data = $user->detail;
