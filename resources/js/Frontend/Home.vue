@@ -44,9 +44,15 @@
                     </h2>
                 </div>
             </div>
-            <el-row :gutter="20">
-                <el-col :md="8">
+            <el-row :gutter="20" justify="center">
+                <el-col :md="8" v-for="d in paket" :key="d.id">
                     <div class="block block-rounded">
+                        <div class="block-content bg-body-light border-bottom border-3">
+                            <h3 class="fs-4 mb-2 fw-bold">
+                                {{ d.nama }}
+                            </h3>
+                            <p>{{ d.usia }}</p>
+                        </div>
                         <div class="block-content block-content-full">
                             <div class="border-3 border-bottom d-flex justify-content-between pb-2">
                                 <div class="space-x">
@@ -55,7 +61,7 @@
                                 </div>
                                 <div class="my-auto">
                                     <div class="fs-3 fw-bold text-primary">
-                                        {{ currency(biaya.pembangunan) }}
+                                        {{ currency(d.pembangunan) }}
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +72,7 @@
                                 </div>
                                 <div class="my-auto">
                                     <div class="fs-3 fw-bold text-primary">
-                                        {{ currency(biaya.pendaftaran) }}
+                                        {{ currency(d.pendaftaran) }}
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +83,7 @@
                                 </div>
                                 <div class="my-auto">
                                     <div class="fs-3 fw-bold text-primary">
-                                        {{ currency(biaya.spp) }}
+                                        {{ currency(d.spp) }}
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +93,7 @@
                                 </div>
                                 <div class="my-auto">
                                     <div class="fs-3 fw-bold text-primary">
-                                        {{ currency(biaya.spp+biaya.pembangunan+biaya.pendaftaran) }}
+                                        {{ currency(d.spp+d.pembangunan+d.pendaftaran) }}
                                     </div>
                                 </div>
                             </div>
@@ -114,6 +120,11 @@
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
          </div>
+
+
+         <a href="https://api.whatsapp.com/send?phone=6287868879678&text=" class="float" target="_blank">
+            <i class="fab fa-whatsapp my-float"></i>
+        </a>
     </base-layout>
 </template>
 
@@ -130,7 +141,24 @@
     width:64px;
     text-align: center;
 }
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+    font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+    z-index:100;
+}
 
+.my-float{
+	margin-top:16px;
+}
 </style>
 
 <script>
@@ -151,6 +179,9 @@ export default {
         },
         biaya : {
             type : Object,
+        },
+        paket : {
+            type : Array,
         }
     },
 }

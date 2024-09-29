@@ -8,8 +8,8 @@
                 </div>
             </div>
             
-            <div class="block rounded">
-                    <div class="block-content py-3">
+            <div class="block rounded"  v-loading="isLoading" >
+                <div class="block-content py-3" v-if="mq.smPlus">
                     <el-row justify="space-between">
                         <el-col :span="12">
                             <el-select v-model="params.limit" placeholder="Pilih" style="width: 115px" @change="fetchData(1)">
@@ -32,10 +32,9 @@
                         </el-col>
                     </el-row>
                     </div>
-                    <div class="block-content p-0">
-                        <el-table :data="data" class="w-100" v-loading="isLoading" header-cell-class-name="bg-body text-dark">
+                    <div class="block-content p-0" v-if="mq.smPlus">
+                        <el-table :data="data" class="w-100" header-cell-class-name="bg-body text-dark">
                             <el-table-column prop="nomor" label="Nomor" width="220" header-align="center"/>
-                            <el-table-column prop="user.nama" label="Pengguna"/>
                             <el-table-column prop="anak.nama" label="Anak"/>
                             <el-table-column label="Tanggal Tempo" align="center">
                                 <template #default="scope">
@@ -67,6 +66,30 @@
                             </el-table-column>
                         </el-table>
                     </div>
+                    <div class="block-content p-0" v-else>
+                        <a :href="route('user.invoice.show', { id: d.id})" v-for="d in data" :key="d.id">
+                            <div class="border-bottom border-3 p-3 text-dark">
+                                <div class="d-flex justify-content-between">
+                                    <div class="fs-5 fw-bold">{{ d.nomor }}</div>
+                                    <div class="text-end">
+                                        <span class="badge bg-primary" v-if="d.status == 'paid'">
+                                            Lunas
+                                        </span>
+                                        <span class="badge bg-danger" v-else>
+                                            Belum Bayar
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fs-5">{{ d.anak.nama }}</div>
+                                        <div class="fs-5">{{ format_date(d.tgl_tempo) }}</div>
+                                    </div>
+                                    <div class="fw-bold fs-4 text-primary">{{ currency(d.total) }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                     <div class="block-content py-2">
                         <el-row justify="space-between">
                             <el-col :lg="12" class="d-flex">
@@ -90,6 +113,7 @@ export default {
     components: {
 
     },
+	inject: ["mq"],
     data(){
         return {
             kota_id : null,

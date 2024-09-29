@@ -18,81 +18,81 @@
             <div class="block rounded-2">
                 <div class="block-content">
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Nama Lengkap</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Nama Lengkap</el-col>
+                        <el-col :md="16" :xs="12">
                             : <span class="fw-semibold">{{ data.nama }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Nama Panggilan</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Nama Panggilan</el-col>
+                        <el-col :md="16" :xs="12">
                             : <span class="fw-semibold">{{ data.username }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Jenis Kelamin</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Jenis Kelamin</el-col>
+                        <el-col :md="16" :xs="12">
                             : <span class="fw-semibold">{{ (data.jk == 'L' ? 'Laki-Laki' : 'Perempuan') }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Tempat / Tanggal Lahir</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Tempat / Tanggal Lahir</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.tmp_lahir }} / {{ data.tgl_lahir }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Anak Ke</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Anak Ke</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.anak_ke }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Jarak Rumah</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Jarak Rumah</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.jarak }} Km</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Alamat</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Alamat</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.alamat }}</span>
                         </el-col>
                     </el-row>
                     
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Sosialisasi dengan lingkungan</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Sosialisasi dengan lingkungan</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan_anak }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Sakit yang pernah diderita</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Sakit yang pernah diderita</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita_anak }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Makanan yang disukai</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Makanan yang disukai</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.makanan_yang_disukai_anak }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Makanan yang tidak disukai</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Makanan yang tidak disukai</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai_anak }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Memiliki Alergi</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Memiliki Alergi</el-col>
+                        <el-col :md="16" :xs="12">
                             :  <span class="fw-semibold">{{ data.memiliki_alergi_anak }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
-                        <el-col :md="8">Scan Akte Kelahiran</el-col>
-                        <el-col :md="16">
+                        <el-col :md="8" :xs="12">Scan Akte Kelahiran</el-col>
+                        <el-col :md="16" :xs="12">
                             :  
                             <a :href="`/uploads/${data.scan_akte}`" class="ep-button ep-button--primary" target="_blank" v-if="data.scan_akte">
                                 Lihat Akte Kelahiran

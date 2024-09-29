@@ -10,7 +10,7 @@ use App\Helpers\Collection;
 use Illuminate\Support\Facades\Validator;
 
 use Carbon\Carbon;
-
+use App\Models\Paket;
 use App\Models\Landing\Video;
 class HomeController extends Controller
 {
@@ -81,17 +81,17 @@ class HomeController extends Controller
         ]);
 
         $biaya = collect([
-            'pembangunan' => (int)settings()->get('pembangunan') ?? 0,
-            'pendaftaran' => (int)settings()->get('pendaftaran') ?? 0,
-            'spp' => (int)settings()->get('spp') ?? 0,
             'denda' => (int)settings()->get('denda') ?? 0,
             'laundry' => (int)settings()->get('laundry') ?? 0,
             'antar_jemput' => (int)settings()->get('antar_jemput') ?? 0,
         ]);
 
+        $paket = Paket::orderBy('id', 'ASC')->get();
+
         return Inertia::render('Home',[
             'program' => $program,
-            'biaya' => $biaya
+            'biaya' => $biaya,
+            'paket' => $paket
         ]);
     }
 

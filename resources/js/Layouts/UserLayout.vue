@@ -3,7 +3,6 @@
         
         <el-container id="page-container" :class="classContainer">
             
-            
             <div id="sidebar">
                 <div class="sidebar-content">
                     <!-- Side Header -->
@@ -15,6 +14,14 @@
                             </a>
                         </div>
                         <!-- END Logo -->
+                         <div>
+                            <!-- Close Sidebar, Visible only on mobile screens -->
+                            <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
+                            <button type="button" class="btn btn-sm btn-alt-danger d-lg-none" @click.prevent="sidebarMobile = !sidebarMobile">
+                            <i class="fa fa-fw fa-times"></i>
+                            </button>
+                            <!-- END Close Sidebar -->
+                        </div>
                     </div>
                     <!-- END Side Header -->
 
@@ -41,7 +48,10 @@
                     <div class="space-x-1">
                         <!-- Toggle Sidebar -->
                         <!-- Layout API, functionality initialized in Template._uiApiLayout() -->
-                        <button type="button" class="btn btn-sm btn-alt-secondary" @click.prevent="sidebar = !sidebar">
+                        <button type="button" class="btn btn-sm btn-alt-secondary d-none d-md-block" @click.prevent="sidebar = !sidebar">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-alt-secondary d-block d-md-none" @click.prevent="sidebarMobile = !sidebarMobile">
                             <i class="fa fa-fw fa-bars"></i>
                         </button>
                         <!-- END Toggle Sidebar -->
@@ -89,9 +99,9 @@
             </header>
 
 
-            <el-main id="main-container">
+            <div id="main-container">
                 <slot />
-            </el-main>
+            </div>
 
         </el-container>
     </el-config-provider>
@@ -113,6 +123,7 @@
         data (){
             return {
                 sidebar : true,
+                sidebarMobile : false,
             }
         },
         computed : {  
@@ -124,7 +135,7 @@
                     'page-header-fixed': true,
                     'enable-page-overlay' : true,
                     'sidebar-o': this.sidebar,
-                    'sidebar-o-xs': this.sidebar,
+                    'sidebar-o-xs': this.sidebarMobile,
                 }
             },
         },
@@ -132,6 +143,7 @@
             if(route().current('register.detail')){
                 this.sidebar = false;
             }
+            // this.sidebarMobile = false;
         },
         setup() {
             return {

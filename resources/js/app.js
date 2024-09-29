@@ -3,6 +3,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { Vue3Mq } from "vue3-mq";
 
 // import { ZiggyVue } from 'ziggy';
 // import { Ziggy } from './ziggy';
@@ -26,6 +27,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
         .use(plugin)
         .use(ZiggyVue, Ziggy)
+        .use(Vue3Mq)
         .mixin({
             methods : {
                 currency(value){

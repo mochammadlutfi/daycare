@@ -15,34 +15,34 @@
                     <el-row :gutter="20" justify="space-between" class="mb-4">
                         <el-col :lg="12">
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Tanggal</el-col>
-                                <el-col :lg="16">
+                                <el-col :lg="8" :sm="8" :xs="8">Tanggal</el-col>
+                                <el-col :lg="16" :sm="16" :xs="16" :class="{'text-end' : !mq.smPlus}">
                                     <div class="fw-semibold">{{ format_date(data.tgl) }}</div>
                                 </el-col>
                             </el-row>
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Kelompok</el-col>
-                                <el-col :lg="16">
+                                <el-col :lg="8" :sm="8" :xs="8">Kelompok</el-col>
+                                <el-col :lg="16" :sm="16" :xs="16" :class="{'text-end' : !mq.smPlus}">
                                     <div class="fw-semibold">{{ data.kelompok.nama }} ({{ data.kelompok.usia }})</div>
                                 </el-col>
                             </el-row>
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Anak</el-col>
-                                <el-col :lg="16">
+                                <el-col :lg="8" :sm="8" :xs="8">Anak</el-col>
+                                <el-col :lg="16" :sm="16" :xs="16" :class="{'text-end' : !mq.smPlus}">
                                     <div class="fw-semibold">{{ data.anak.nama }}</div>
                                 </el-col>
                             </el-row>
                         </el-col>
                         <el-col :lg="12">
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Tinggi Badan</el-col>
-                                <el-col :lg="16">
+                                <el-col :lg="8" :sm="8" :xs="8">Tinggi Badan</el-col>
+                                <el-col :lg="16" :sm="16" :xs="16" :class="{'text-end' : !mq.smPlus}">
                                     <div class="fw-semibold">{{ data.tinggi }} CM</div>
                                 </el-col>
                             </el-row>
                             <el-row class="mb-2" :gutter="10">
-                                <el-col :lg="8">Berat Badan</el-col>
-                                <el-col :lg="16">
+                                <el-col :lg="8" :sm="8" :xs="8">Berat Badan</el-col>
+                                <el-col :lg="16" :sm="16" :xs="16" :class="{'text-end' : !mq.smPlus}">
                                     <div class="fw-semibold">{{ data.berat }} Kg</div>
                                 </el-col>
                             </el-row>
@@ -94,6 +94,7 @@ import moment from 'moment';
 export default {
     components : {
     },
+	inject: ["mq"],
     data(){
         return {
             active : 0,
