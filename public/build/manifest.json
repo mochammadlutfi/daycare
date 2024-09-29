@@ -759,7 +759,7 @@
     "src": "resources/js/Admin/Dashboard.vue"
   },
   "resources/js/Admin/Foto/Form.vue": {
-    "file": "assets/Form-32d3ca3b.js",
+    "file": "assets/Form-2aa82e88.js",
     "imports": [
       "_id-1c1e2a8a.js",
       "_index-86db54a9.js",
@@ -774,7 +774,7 @@
     "src": "resources/js/Admin/Foto/Form.vue"
   },
   "resources/js/Admin/Foto/Index.vue": {
-    "file": "assets/Index-e3ea85da.js",
+    "file": "assets/Index-7fac7237.js",
     "imports": [
       "_moment-fbc5633a.js",
       "_id-1c1e2a8a.js",
@@ -1487,7 +1487,7 @@
     "src": "resources/js/Admin/Testimoni/Show.vue"
   },
   "resources/js/Admin/Video/Form.vue": {
-    "file": "assets/Form-2aa82e88.js",
+    "file": "assets/Form-32d3ca3b.js",
     "imports": [
       "_id-1c1e2a8a.js",
       "_index-86db54a9.js",
@@ -1502,7 +1502,7 @@
     "src": "resources/js/Admin/Video/Form.vue"
   },
   "resources/js/Admin/Video/Index.vue": {
-    "file": "assets/Index-7fac7237.js",
+    "file": "assets/Index-e3ea85da.js",
     "imports": [
       "_moment-fbc5633a.js",
       "_id-1c1e2a8a.js",
