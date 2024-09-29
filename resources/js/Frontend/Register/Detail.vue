@@ -496,7 +496,7 @@ export default {
                 isLaundry: false,
                 paket_id : null,
             },
-            step : 3,
+            step : 1,
             loading : false,
             selectPaket : null,
             errors_anak : {},

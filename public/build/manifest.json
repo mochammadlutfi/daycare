@@ -1894,7 +1894,7 @@
     "src": "resources/js/Frontend/Raport/Show.vue"
   },
   "resources/js/Frontend/Register/Detail.vue": {
-    "file": "assets/Detail-7e6e89d3.js",
+    "file": "assets/Detail-a7861d3d.js",
     "imports": [
       "_SingleFileUpload-9f2e7207.js",
       "_id-1c1e2a8a.js",
@@ -2066,7 +2066,7 @@
       "resources/js/Frontend/Video/Show.vue",
       "resources/js/Frontend/Video/VideoSlide.vue"
     ],
-    "file": "assets/app-2704db9c.js",
+    "file": "assets/app-157955cd.js",
     "imports": [
       "_id-1c1e2a8a.js"
     ],
