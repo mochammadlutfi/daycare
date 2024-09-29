@@ -15,7 +15,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="hero-static col-md-6 col-xl-4 d-flex align-items-center bg-body-extra-light">
+                            <div class="hero-static col-md-6 col-xl-4 d-flex align-items-md-center bg-body-extra-light">
                                 <div class="content content-full">
                                     <!-- Header -->
                                     <div class="px-4 py-2 mb-4">
@@ -78,6 +78,7 @@ export default {
     components: {
         ElConfigProvider,
     },
+	inject: ["mq"],
     setup() {
         return {
             zIndex: 3000,

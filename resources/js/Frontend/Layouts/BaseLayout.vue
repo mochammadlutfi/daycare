@@ -35,26 +35,26 @@
                                 </a>
                             </li>
                         </ul>
+
+                        <button type="button" class="btn btn-sm btn-alt-secondary d-lg-none" @click.prevent="sidebar = true">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
                         <template v-if="$page.props.user">
-                        <a class="ep-button ep-button--primary my-md-auto d-none d-lg-block"
+                        <a class="ep-button ep-button--primary my-md-auto"
                             :href="route('user.dashboard')">
                             Portal Orang Tua
                         </a>
                         </template>
                         <template v-else>
-                        <a class="ep-button ep-button--primary my-md-auto d-none d-lg-block"
+                        <a class="ep-button ep-button--primary my-md-auto"
                             :href="route('login')">
                             Masuk 
                         </a>
-                        <a class="ep-button ep-button--primary my-md-auto d-none d-lg-block"
+                        <a class="ep-button ep-button--primary my-md-auto"
                             :href="route('register')">
                             Daftar 
                         </a>
                         </template>
-
-                        <button type="button" class="btn btn-sm btn-alt-secondary d-lg-none" @click.prevent="sidebar = true">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
                     </div>
                     <!-- END Right Section -->
                 </div>
@@ -100,37 +100,23 @@
                                         <div class="simplebar-content" style="padding: 0px;">
                                             <!-- Side Main Navigation -->
                                             <div class="content-side content-side-full">
-                                                <!-- <ul class="nav-main">
+                                                <ul class="nav-main">
                                                     <li class="nav-main-item">
-                                                        <a class="nav-main-link"  :href="route('profil')">
-                                                            <i class="nav-main-link-icon fa fa-user"></i>
-                                                            <span class="nav-main-link-name">Profil</span>
+                                                        <a class="nav-main-link" href="#program">
+                                                            <span class="nav-main-link-name">Program</span>
                                                         </a>
                                                     </li>
                                                     <li class="nav-main-item">
-                                                        <a class="nav-main-link" :href="route('video.index')">
-                                                            <i class="nav-main-link-icon fa fa-video"></i>
-                                                            <span class="nav-main-link-name">Video</span>
+                                                        <a class="nav-main-link" href="#harga">
+                                                            <span class="nav-main-link-name">Harga</span>
                                                         </a>
                                                     </li>
                                                     <li class="nav-main-item">
-                                                        <a class="nav-main-link" :href="route('video.index')">
-                                                            <i class="nav-main-link-icon fa fa-boxes-packing"></i>
-                                                            <span class="nav-main-link-name">Aspirasi</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-main-item">
-                                                        <a class="nav-main-link" :href="route('video.index')">
-                                                            <i class="nav-main-link-icon fa fa-thumbs-up"></i>
-                                                            <span class="nav-main-link-name">Testimoni</span>
+                                                        <a class="nav-main-link" href="#lokasi">
+                                                            <span class="nav-main-link-name">Lokasi Kami</span>
                                                         </a>
                                                     </li>
                                                 </ul>
-                                                <a class="ep-button ep-button--primary w-100"
-                                                    :href="route('dukungan.create')">
-                                                    <i class="fa fa-pencil opacity-50 me-1"></i> 
-                                                    Tulis Dukunganmu 
-                                                </a> -->
                                             </div>
                                             <!-- END Side Main Navigation -->
                                         </div>
@@ -184,7 +170,7 @@
                     'main-content-boxed': true,
                     'side-trans-enabled': true,
                     'page-header-fixed': this.scrolled,
-                    'sidebar-o': this.sidebar,
+                    'sidebar-o-xs': this.sidebar,
                 }
             },
         },

@@ -146,6 +146,9 @@ class RegisterController extends Controller
             'alamat_kantor_ibu' => 'required',
             'agama_ibu' => 'required',
             'pendidikan_ibu' => 'required',
+            'ktp_ayah' => 'required',
+            'ktp_ibu' => 'required',
+            'kk' => 'required',
         ];
 
         $pesan = [
@@ -169,6 +172,9 @@ class RegisterController extends Controller
             'alamat_kantor_ibu.required' => 'Alamat kantor ibu tidak boleh kosong',
             'agama_ibu.required' => 'Agama ibu tidak boleh kosong',
             'pendidikan_ibu.required' => 'Pendidikan ibu tidak boleh kosong',
+            'ktp_ayah.required' => 'Scan KTP Ayah tidak boleh kosong',
+            'ktp_ibu.required' => 'Scan KTP Ibu tidak boleh kosong',
+            'kk.required' => 'Scan KK tidak boleh kosong',
         ];        
 
         $validator = Validator::make($request->all(), $rules, $pesan);

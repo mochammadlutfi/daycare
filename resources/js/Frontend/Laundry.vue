@@ -8,17 +8,17 @@
                 </div>
             </div>
             
-            <div class="block rounded">
-                    <div class="block-content py-3">
-                    <el-row justify="space-between">
-                        <el-col :span="12">
-                            <el-select v-model="params.limit" placeholder="Pilih" style="width: 115px" @change="fetchData(1)">
+            <div class="block rounded" v-loading="isLoading">
+                <div class="block-content py-3" :class="{'border-bottom border-3' : !mq.smPlus}">
+                    <el-row justify="space-between" :gutter="10">
+                        <el-col :md="4" :xs="6" :sm="4">
+                            <el-select v-model="params.limit" placeholder="Pilih" class="w-100" @change="fetchData(1)">
                                 <el-option label="25" value="25"/>
                                 <el-option label="50" value="50"/>
                                 <el-option label="100" value="100"/>
                             </el-select>
                         </el-col>
-                        <el-col :span="7">
+                        <el-col :md="7" :xs="18"  :sm="20">
                             <el-input
                                 v-model="params.q"
                                 @input="doSearch"
@@ -31,42 +31,71 @@
                             </el-input>
                         </el-col>
                     </el-row>
-                    </div>
-                    <div class="block-content p-0">
-                        <el-table :data="data" class="w-100" v-loading="isLoading" header-cell-class-name="bg-body text-dark">
-                            <el-table-column prop="tgl" label="Tanggal" width="200" header-align="center">
-                                <template #default="scope">
-                                    <div>{{ format_date(scope.row.laundry.tgl) }}</div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="anak.nama" label="Anak"/>
-                            <el-table-column label="Kelompok" width="220" header-align="center">
-                                <template #default="scope">
-                                    <div>{{ scope.row.laundry.kelompok.nama }} ({{  scope.row.laundry.kelompok.usia }})</div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Pengasuh" width="220" header-align="center">
-                                <template #default="scope">
-                                    <div>{{ scope.row.laundry.admin.nama }}</div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Berat" width="220" header-align="center">
-                                <template #default="scope">
-                                    <div>{{ scope.row.berat }} gram</div>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                    <div class="block-content py-2">
-                        <el-row justify="space-between">
-                            <el-col :lg="12" class="d-flex">
-                                <p class="my-auto text-xs">Menampilkan {{ from }} sampai {{ to }} dari {{ total }}</p>
-                            </el-col>
-                            <el-col :lg="12" class="text-end">
-                                <el-pagination class="float-end" background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="page" @current-change="fetchData"/>
-                            </el-col>
-                        </el-row>
-                    </div>
+                </div>
+                <div class="block-content p-0" v-if="mq.smPlus">
+                    <el-table :data="data" class="w-100" header-cell-class-name="bg-body text-dark">
+                        <el-table-column prop="tgl" label="Tanggal" width="200" header-align="center">
+                            <template #default="scope">
+                                <div>{{ format_date(scope.row.laundry.tgl) }}</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="anak.nama" label="Anak"/>
+                        <el-table-column label="Kelompok" width="220" header-align="center">
+                            <template #default="scope">
+                                <div>{{ scope.row.laundry.kelompok.nama }} ({{  scope.row.laundry.kelompok.usia }})</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Pengasuh" width="220" header-align="center">
+                            <template #default="scope">
+                                <div>{{ scope.row.laundry.admin.nama }}</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Berat" width="220" header-align="center">
+                            <template #default="scope">
+                                <div>{{ scope.row.berat }} gram</div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <div class="block-content p-0" v-else>
+                    <template v-if="data.length">
+                        <div class="border-bottom border-3 p-3 text-dark"  v-for="d in data" :key="d.id">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Tanggal</div>
+                                <div class="fs-5">{{ format_date(d.laundry.tgl) }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Pengasuh</div>
+                                <div class="fs-5">{{ d.laundry.admin.nama }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Anak</div>
+                                <div class="fs-5">{{ d.anak.nama }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Berat</div>
+                                <div class="fs-5">{{ d.berat }} gram</div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="border-bottom border-3 p-3 text-dark">
+                            <div class="text-center">
+                                Tidak ada data
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="block-content py-2">
+                    <el-row justify="space-between">
+                        <el-col :lg="12" class="d-flex">
+                            <p class="my-auto text-xs">Menampilkan {{ from }} sampai {{ to }} dari {{ total }}</p>
+                        </el-col>
+                        <el-col :lg="12" class="text-end">
+                            <el-pagination class="float-end" background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="page" @current-change="fetchData"/>
+                        </el-col>
+                    </el-row>
+                </div>
             </div>
         </div>
     </user-layout>
@@ -80,6 +109,7 @@ export default {
     components: {
 
     },
+    inject : ["mq"],
     data(){
         return {
             kota_id : null,

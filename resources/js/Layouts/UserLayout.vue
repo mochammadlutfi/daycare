@@ -1,6 +1,9 @@
 <template>
     <el-config-provider namespace="ep" :locale="locale">
-        
+        <Head>
+            <title>{{ title }}</title>
+        </Head>
+
         <el-container id="page-container" :class="classContainer">
             
             <div id="sidebar">
@@ -40,7 +43,6 @@
                 </div>
             </div>
             
-            
             <header id="page-header">
                 <!-- Header Content -->
                 <div class="content-header">
@@ -65,19 +67,28 @@
                             <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-user-dropdown"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-user d-sm-none"></i>
-                                <span class="d-none d-sm-inline-block ms-2">{{ $page.props.user.nama }}</span>
+                                <span class="ms-2">{{ $page.props.user.nama }}</span>
                                 <i class="fa fa-angle-down opacity-50 ms-1"></i>
                             </button>
                             <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item>
-                                    <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" href="#">
-                                        <span class="fs-sm fw-500">Profil</span>
+                                    <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" 
+                                    :href="route('user.profile')">
+                                        <span class="fs-sm fw-500">Profil Akun</span>
                                         <i class="fa fa-fw fa-user opacity-25"></i>
                                     </a>
                                 </el-dropdown-item>
                                 <el-dropdown-item>
-                                    <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" href="#">
+                                    <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" 
+                                    :href="route('user.orangtua.index')">
+                                        <span class="fs-sm fw-500">Profil Orang Tua</span>
+                                        <i class="fa fa-fw fa-lock opacity-25"></i>
+                                    </a>
+                                </el-dropdown-item>
+                                <el-dropdown-item>
+                                    <a class="dropdown-item d-flex align-items-center justify-content-between space-x-1" 
+                                    :href="route('user.password')">
                                         <span class="fs-sm fw-500">Password</span>
                                         <i class="fa fa-fw fa-lock opacity-25"></i>
                                     </a>
@@ -108,7 +119,7 @@
 </template>
   
 <script>
-    import {Link} from '@inertiajs/vue3';
+    import { Link, Head } from '@inertiajs/vue3';
     import id from 'element-plus/dist/locale/id.mjs'
     import BaseNavigation from './BaseNavigation.vue';
     import simplebar from 'simplebar-vue';
@@ -118,7 +129,8 @@
             simplebar,
             ElConfigProvider,
             Link,
-            BaseNavigation
+            BaseNavigation,
+            Head
         },
         data (){
             return {
@@ -138,6 +150,12 @@
                     'sidebar-o-xs': this.sidebarMobile,
                 }
             },
+        },
+        props : {
+            title : {
+                type : String,
+                default : '',
+            }
         },
         mounted(){
             if(route().current('register.detail')){

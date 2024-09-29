@@ -1,5 +1,5 @@
 <template>
-    <user-layout>
+    <user-layout title="Invoice">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Invoice</span>

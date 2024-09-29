@@ -22,11 +22,11 @@
     const maxSize = 1 * 1024 * 1024; // 1MB in bytes
   
     if (!validFormats.includes(file.type)) {
-      return 'Invalid file format. Only PDF, JPG, JPEG, and PNG are allowed.';
+      return 'Format file salah, hanya boleh PDF, JPG, JPEG, dan PNG.';
     }
   
     if (file.size > maxSize) {
-      return 'File size exceeds 1MB.';
+      return 'Ukuran file tidak boleh lebih dari 1MB.';
     }
   
     return '';

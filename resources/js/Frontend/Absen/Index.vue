@@ -1,8 +1,8 @@
 <template>
-    <user-layout>
+    <user-layout title="Absen Anak">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
-                <span>Invoice</span>
+                <span>Absen Anak</span>
                 <div class="space-x-1">
 
                 </div>
@@ -27,12 +27,11 @@
 
 <script>
 import axios from 'axios';
-import dayjs from 'dayjs';
-import { router } from '@inertiajs/vue3';
 export default {
     components: {
 
     },
+    inject : ['mq'],
     props : {
         // data : Object,
     },

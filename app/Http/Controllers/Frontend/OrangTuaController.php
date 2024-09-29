@@ -35,7 +35,7 @@ class OrangTuaController extends Controller
 
         $value = UserDetail::where('user_id', $user_id)->first();
 
-        return Inertia::render('Register/Wali',[
+        return Inertia::render('User/OrangTua',[
             'value' => $value,
             'editMode' => $value ? true : false
         ]);

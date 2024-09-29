@@ -66,18 +66,24 @@ Route::namespace('Frontend')->group(function(){
             Route::get('/dashboard','DashboardController@index')
             ->name('dashboard');
 
-            Route::get('/profile','UserController@profile')->name('profile');
-            Route::post('/profile/update','UserController@profileUpdate')->name('profile.update');
+            Route::prefix('/profil')->group(function () {
+                Route::get('/', 'UserController@profile')->name('profile');
+                Route::post('/','UserController@profileUpdate');
+            });
+            
+            Route::prefix('/password')->group(function () {
+                Route::get('/', 'UserController@password')->name('password');
+                Route::post('/','UserController@passwordUpdate');
+            });
 
-            Route::get('/password','UserController@password')->name('password');
-            Route::post('/password/update','UserController@passwordUpdate')->name('password.update');
+            // Route::get('/password','UserController@password')->name('password');
+            // Route::post('/password/update','UserController@passwordUpdate')->name('password.update');
 
             Route::prefix('/orangtua')->name('orangtua.')->group(function () {
                 Route::get('/', 'OrangTuaController@index')->name('index');
                 Route::post('/store','OrangTuaController@store')->name('store');
                 Route::post('/{id}/update','OrangTuaController@update')->name('update');
             });
-        
 
             Route::prefix('/invoice')->name('invoice.')->group(function () {
                 Route::get('/', 'InvoiceController@index')->name('index');

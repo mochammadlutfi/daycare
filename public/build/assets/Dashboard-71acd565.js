@@ -1,1 +1,0 @@
-import{_ as o,m as s,o as t,e as a,w as n,f as r}from"./id-1c1e2a8a.js";const c={setup(){}},_=r("h1",null,"Dashboard",-1);function u(l,p,d,f,h,i){const e=s("user-layout");return t(),a(e,null,{default:n(()=>[_]),_:1})}const x=o(c,[["render",u]]);export{x as default};

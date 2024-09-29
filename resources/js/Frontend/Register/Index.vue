@@ -15,15 +15,15 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="hero-static col-md-6 col-xl-4 d-flex align-items-center bg-body-extra-light">
+                            <div class="hero-static col-md-6 col-xl-4 d-flex align-items-md-center bg-body-extra-light">
                                 <div class="content content-full">
                                     <!-- Header -->
-                                    <div class="px-4 py-2 mb-3">
+                                    <div class="px-4 py-2 mb-3 text-center text-md-start">
                                         <a href="/" class="text-center">
                                             <img src="/images/logo/logo.png" style="width:40%"/>
                                         </a>
                                         <h2 class="h3 fw-bold mt-2 mb-2">Daftar</h2>
-                                        <p>Sudah Punya Akun ?<a :href="route('login')"> Masuk Sekarang</a></p>
+                                        <p>Sudah Punya Akun ?<a :href="route('login')" class="fw-bold"> Masuk Sekarang</a></p>
                                     </div>
                                     <!-- END Header -->
 

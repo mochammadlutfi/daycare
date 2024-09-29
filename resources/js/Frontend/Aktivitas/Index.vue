@@ -1,5 +1,5 @@
 <template>
-    <user-layout>
+    <user-layout title="Aktivitas">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Aktivitas</span>
@@ -8,17 +8,17 @@
                 </div>
             </div>
             
-            <div class="block rounded">
-                    <div class="block-content py-3">
-                    <el-row justify="space-between">
-                        <el-col :span="12">
-                            <el-select v-model="params.limit" placeholder="Pilih" style="width: 115px" @change="fetchData(1)">
+            <div class="block rounded"  v-loading="isLoading">
+                <div class="block-content py-3" :class="{'border-bottom border-3' : !mq.smPlus}">
+                    <el-row justify="space-between" :gutter="10">
+                        <el-col :md="4" :xs="6" :sm="4">
+                            <el-select v-model="params.limit" placeholder="Pilih" class="w-100" @change="fetchData(1)">
                                 <el-option label="25" value="25"/>
                                 <el-option label="50" value="50"/>
                                 <el-option label="100" value="100"/>
                             </el-select>
                         </el-col>
-                        <el-col :span="7">
+                        <el-col :md="7" :xs="18"  :sm="20">
                             <el-input
                                 v-model="params.q"
                                 @input="doSearch"
@@ -31,42 +31,74 @@
                             </el-input>
                         </el-col>
                     </el-row>
-                    </div>
-                    <div class="block-content p-0">
-                        <el-table :data="data" class="w-100" v-loading="isLoading" header-cell-class-name="bg-body text-dark">
-                            <el-table-column prop="nomor" label="Nomor" width="220" header-align="center"/>
-                            <el-table-column prop="user.nama" label="Pengguna"/>
-                            <el-table-column prop="anak.nama" label="Anak"/>
-                            <el-table-column label="Tanggal Tempo" align="center">
-                                <template #default="scope">
-                                    {{ format_date(scope.row.tgl_tempo) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Status" align="center">
-                                <template #default="scope">
-                                    <span class="badge bg-primary" v-if="scope.row.status == 'paid'">
-                                        Lunas
-                                    </span>
-                                    <span class="badge bg-danger" v-else>
-                                        Belum Bayar
-                                    </span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Total" align="center">
-                                <template #default="scope">
-                                    {{  currency(scope.row.total) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="Aksi" align="center" width="180">
-                                <template #default="scope">
-                                    <a :href="route('user.invoice.show', { id :scope.row.id})" class="ep-button ep-button--primary">
-                                        <i class="fa fa-eye me-1"></i>
-                                        Detail
-                                    </a>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
+                </div>
+                <div class="block-content p-0" v-if="mq.smPlus">
+                    <el-table :data="data" class="w-100" header-cell-class-name="bg-body text-dark">
+                        <el-table-column prop="nomor" label="Nomor" width="220" header-align="center"/>
+                        <el-table-column prop="anak.nama" label="Anak"/>
+                        <el-table-column label="Tanggal Tempo" align="center">
+                            <template #default="scope">
+                                {{ format_date(scope.row.tgl_tempo) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Status" align="center">
+                            <template #default="scope">
+                                <span class="badge bg-primary" v-if="scope.row.status == 'paid'">
+                                    Lunas
+                                </span>
+                                <span class="badge bg-danger" v-else>
+                                    Belum Bayar
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Total" align="center">
+                            <template #default="scope">
+                                {{  currency(scope.row.total) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Aksi" align="center" width="180">
+                            <template #default="scope">
+                                <a :href="route('user.invoice.show', { id :scope.row.id})" class="ep-button ep-button--primary">
+                                    <i class="fa fa-eye me-1"></i>
+                                    Detail
+                                </a>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <div class="block-content p-0" v-else>
+                    <template v-if="data.length">
+                        <div class="border-bottom border-3 p-3 text-dark"  v-for="d in data" :key="d.id">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Nomor</div>
+                                <div class="fs-5">{{ d.nomor }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Tanggal</div>
+                                <div class="fs-5">{{ format_date(d.laundry.tgl) }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Pengasuh</div>
+                                <div class="fs-5">{{ d.laundry.admin.nama }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Anak</div>
+                                <div class="fs-5">{{ d.anak.nama }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5 fw-semibold">Berat</div>
+                                <div class="fs-5">{{ d.berat }} gram</div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="border-bottom border-3 p-3 text-dark">
+                            <div class="text-center">
+                                Tidak ada data
+                            </div>
+                        </div>
+                    </template>
+                </div>
                     <div class="block-content py-2">
                         <el-row justify="space-between">
                             <el-col :lg="12" class="d-flex">
@@ -90,6 +122,7 @@ export default {
     components: {
 
     },
+    inject : ['mq'],
     data(){
         return {
             kota_id : null,
@@ -125,7 +158,7 @@ export default {
             var page = (page == undefined) ? 1 : page;
             try {
                 this.isLoading = true;
-                const response = await axios.get(this.route("user.invoice.data"),{
+                const response = await axios.get(this.route("user.aktivitas.data"),{
                     params: {
                         page : page,
                         limit : this.params.limit,

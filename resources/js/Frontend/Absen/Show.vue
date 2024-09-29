@@ -1,5 +1,5 @@
 <template>
-    <user-layout>
+    <user-layout title="Absen Anak">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Absen {{ anak.nama }}</span>
@@ -9,7 +9,7 @@
             </div>
             
             <div class="block rounded">
-                <div class="block-content">
+                <div class="block-content p-0 p-md-4">
                     <el-calendar>
                         <template #date-cell="{ data }">
                             <div :class="data.isSelected ? 'is-selected' : ''">

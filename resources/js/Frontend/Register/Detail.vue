@@ -1,5 +1,5 @@
 <template>
-    <user-layout>
+    <user-layout title="Pendaftaran">
         <div class="content">
             <div class="block block-rounded">
                 <div class="block-content block-content-full">
@@ -31,9 +31,10 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :md="12">
-                                        <el-form-item label="Tanggal Lahir Ayah" :error="errors.tgl_lahir_ayah">
-                                            <el-date-picker v-model="form.tgl_lahir_ayah" type="date" placeholder="Tanggal Lahir"
-                                                format="DD-MM-YYYY" value-format="YYYY-MM-DD" style="width: 100%" />
+                                        <el-form-item label="TanggTanggal Lahir Ayahal" :error="errors.tgl_lahir_ayah">
+                                            <el-date-picker v-model="form.tgl_lahir_ayah" type="date" placeholder="Tanggal Lahir Ayah"
+                                                format="DD-MM-YYYY" value-format="YYYY-MM-DD" class="w-100"/>
+                                            <span class="fs-xs">Tanggal Bisa Diketik atau dipilih (DD-MM-YYYY)</span>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
@@ -104,9 +105,10 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :md="12">
-                                        <el-form-item label="Tanggal Lahir Ibu" :error="errors.tgl_lahir_ibu">
-                                            <el-date-picker v-model="form.tgl_lahir_ibu" type="date" placeholder="Tanggal Lahir"
-                                                format="DD-MM-YYYY" value-format="YYYY-MM-DD" style="width: 100%" />
+                                        <el-form-item label="TanggTanggal Lahir Ibu" :error="errors.tgl_lahir_ibu">
+                                            <el-date-picker v-model="form.tgl_lahir_ibu" type="date" placeholder="Tanggal Lahir Ibu"
+                                                format="DD-MM-YYYY" value-format="YYYY-MM-DD" class="w-100"/>
+                                            <span class="fs-xs">Tanggal Bisa Diketik atau dipilih (DD-MM-YYYY)</span>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>

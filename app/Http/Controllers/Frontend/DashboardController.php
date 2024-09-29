@@ -19,7 +19,29 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $data = [];
+        $user = auth()->guard('web')->user();
+
+        $data = collect([
+            [
+                'to' => route('user.anak.index'),
+                'icon' => '<i class="fa fa-user-friends fa-2x"></i>',
+                'name' => 'Anak',
+                'value' => DB::table('anak')->where('user_id', $user->id)->where('status', 'Aktif')->get()->count(),
+            ],
+            [
+                'to' => route('user.invoice.index'),
+                'icon' => '<i class="fa fa-wallet fa-2x"></i>',
+                'name' => 'Tagihan Invoice',
+                'value' => DB::table('invoice')->where('user_id', $user->id)->where('status', 'unpaid')->get()->count(),
+            ],
+            [
+                'to' => route('user.raport.index'),
+                'icon' => '<i class="fa fa-wallet fa-2x"></i>',
+                'name' => 'Penilaian',
+                'value' => DB::table('invoice')->where('user_id', $user->id)->where('status', 'unpaid')->get()->count(),
+            ],
+        ]);
+
         return Inertia::render('Dashboard',[
             'data' => $data
         ]);

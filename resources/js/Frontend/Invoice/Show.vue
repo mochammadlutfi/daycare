@@ -1,5 +1,5 @@
 <template>
-    <user-layout title="Detail Relawan">
+    <user-layout title="Detail Invoice">
         <div class="content">
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Invoice</span>

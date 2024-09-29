@@ -25,97 +25,6 @@ class UserController extends Controller
         $this->middleware(['auth', 'verified']);
     }
 
-    
-    public function aktivasi()
-    {
-        return Inertia::render('User/Aktivasi');
-    }
-
-    
-    public function dashboard()
-    {
-        $user_id = auth()->guard('web')->user()->id;
-
-        $sale_active = Sale::where('customer_id', $user_id)->where('status', '!=', 'done')->get()->count();
-        $sale_done = Sale::where('customer_id', $user_id)->where('status', 'done')->get()->count();
-        $total_belanja = Sale::where('customer_id', $user_id)->whereIn('status', array('confirmed', 'delivery', 'done'))->sum('grand_total');
-
-        $overview = collect([
-            [
-                'title' => 'Pesanan Berlangsung',
-                'data' => $sale_active,
-                'icon' => 'fa fa-spin fa-spinner',
-                'color' => 'text-warning',
-                'type' => 'count',
-                'url' => route('user.order.index')
-            ],
-            [
-                'title' => 'Pesanan Selesai',
-                'data' => $sale_done,
-                'icon' => 'fa fa-check',
-                'color' => 'text-success',
-                'type' => 'count',
-                'url' => route('user.order.index', ['status' => 'selesai'])
-            ],
-            [
-                'title' => 'Total Belanja',
-                'data' => $total_belanja,
-                'color' => 'text-primary',
-                'icon' => 'fa fa-money-bill',
-                'type' => 'money',
-                'url' => null,
-            ],
-        ]);
-
-        $address = UserAddress::where('user_id', $user_id)->where('is_primary', 1)->first();
-
-        return Inertia::render('Frontend/User/Dashboard',[
-            'overview' => $overview,
-            'address' => $address
-        ]);
-
-    }
-
-    
-    public function settings()
-    {
-
-        $data = Collect([
-            [
-                'title' => 'Profil',
-                'sub_title' => 'Pengaturan informasi data diri',
-                'icon_type' => 'image',
-                'icon_src' => 'https://blue.kumparan.com/uikit-assets/assets/icons/profile-a511c2f486f99dfa2abdf99e78a848a1.svg',
-                'route' => route('user.settings.profile'),
-            ],
-            [
-                'title' => 'Alamat Email',
-                'sub_title' => auth()->guard('web')->user()->email,
-                'icon_type' => 'image',
-                'icon_src' => 'https://blue.kumparan.com/uikit-assets/assets/icons/mail-5c0af36ee287b48288238ba4cbbe7da4.svg',
-                'route' => route('user.settings.email'),
-            ],
-            [
-                'title' => 'No Handphone',
-                'sub_title' => 'Belum Ditambahkan',
-                'icon_type' => 'image',
-                'icon_src' => 'https://blue.kumparan.com/uikit-assets/assets/icons/smartphone-black-56938dcd68fd5ff772e52d4ebf7f6161.svg',
-                'route' => route('user.settings.phone'),
-            ],
-            [
-                'title' => 'Password',
-                'sub_title' => '*****',
-                'icon_type' => 'image',
-                'icon_src' => 'https://blue.kumparan.com/uikit-assets/assets/icons/lock-73423076303023c063ea367b5823ca3e.svg',
-                'route' => route('user.settings.password'),
-            ],
-        ]);
-
-        return Inertia::render('Frontend/User/Settings/Index',[
-            'dataList' => $data,
-        ]);
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -123,10 +32,10 @@ class UserController extends Controller
      */
     public function profile()
     {
-        $data = User::select('name', 'email', 'phone', 'avatar')
-        ->where('id', auth()->guard('web')->user()->id)->first();
+        $user = auth()->guard('web')->user();
+        $data = User::where('id',$user->id)->first();
 
-        return Inertia::render('Frontend/User/Settings/Profile',[
+        return Inertia::render('User/Profile',[
             'data' => $data,
         ]);
     }
@@ -138,12 +47,14 @@ class UserController extends Controller
      */
     public function updateProfil(Request $request)
     {
+        $user = auth()->guard('web')->user();
+
         $rules = [
-            'name' => 'required',
+            'nama' => 'required',
         ];
 
         $pesan = [
-            'name.required' => 'Full Name must be filled.',
+            'nama.required' => 'Nama Lengkap harus diisi',
         ];
 
         $validator = Validator::make($request->all(), $rules, $pesan);
@@ -152,19 +63,9 @@ class UserController extends Controller
         }else{
             DB::beginTransaction();
             try{
-                    $data = User::where('id', auth()->guard('web')->user()->id)->first();
+                    $data = User::where('id', $user->id)->first();
                     $data->name = $request->name;
-                    if($data->avatar != $request->avatar){
-                        if(Storage::disk('public')->exists($data->avatar))
-                        {
-                            Storage::disk('public')->delete($data->avatar);
-                        }
-                        if($request->hasFile('avatar')){
-                            $data->avatar = $this->uploadFiles($request->file('avatar'), Str::slug($request->username, '-'));
-                        }else{
-                            $data->avatar = null;
-                        }
-                    }
+                    $data->email = $request->email;
                     $data->save();
 
             }catch(\QueryException $e){
@@ -172,7 +73,7 @@ class UserController extends Controller
                 return back();
             }
             DB::commit();
-            return redirect()->route('user.settings.profile');
+            return redirect()->route('user.profile');
         }
     }
 
@@ -284,8 +185,7 @@ class UserController extends Controller
 
     public function password()
     {
-        return Inertia::render('Frontend/User/Settings/Password',[
-        ]);
+        return Inertia::render('User/Password');
     }
 
 
