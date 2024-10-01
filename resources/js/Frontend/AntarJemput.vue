@@ -68,7 +68,7 @@
                         <div class="border-bottom border-3 p-3 text-dark"  v-for="d in data" :key="d.id">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="fs-5 fw-semibold">Tanggal</div>
-                                <div class="fs-5">{{ format_date(d.tgl) }}</div>
+                                <div class="fs-5">{{ format_date(d.tgl)  }} {{ d.jam }}</div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="fs-5 fw-semibold">Pengasuh</div>

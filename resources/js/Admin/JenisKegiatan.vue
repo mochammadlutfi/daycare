@@ -185,7 +185,7 @@ export default {
         submit() {
             this.loadingForm = true;
             let form = this.$inertia.form(this.form);
-            let url = this.editMode == true ? this.route('admin.jenis_kegiatanupdate', {id : this.form.id}) : this.route('admin.jenis_kegiatanstore');
+            let url = this.editMode == true ? this.route('admin.jenis_kegiatan.update', {id : this.form.id}) : this.route('admin.jenis_kegiatan.store');
             form.post(url, {
                 preserveScroll: true,
                 onFinish:() => {

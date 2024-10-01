@@ -17,7 +17,7 @@ use Image;
 use App\Models\User;
 use App\Models\Anak;
 use App\Models\Invoice;
-
+use App\Models\Paket;
 class PendaftaranController extends Controller
 {
 
@@ -45,7 +45,22 @@ class PendaftaranController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Pendaftaran/Form');
+        $user = auth()->guard('web')->user();
+
+        $biaya = collect([
+            'denda' => (int)settings()->get('denda') ?? 0,
+            'laundry' => (int)settings()->get('laundry') ?? 0,
+            'antar_jemput' => (int)settings()->get('antar_jemput') ?? 0,
+        ]);
+
+        $paket = Paket::orderBy('id', 'ASC')->get();
+
+        return Inertia::render('Pendaftaran/Form',[
+            // 'value' => $data,
+            'biaya' => $biaya,
+            'paket' => $paket,
+            // 'editMode' => $data ? true : false,
+        ]);
     }
 
     /**

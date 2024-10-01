@@ -188,8 +188,6 @@ class PegawaiController extends Controller
     {
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
-        $limit = ($request->limit) ? $request->limit : 25;
-        $paging = !empty($request->page) ? true : false;
 
         $elq = Admin::when($request->q, function($query, $search){
             $query->where('nama', 'LIKE', '%' . $search . '%')
@@ -201,8 +199,8 @@ class PegawaiController extends Controller
         })
         ->orderBy($sort, $sortDir);
         
-        if($paging){
-            $data = $elq->paginate($request->page);
+        if($request->limit){
+            $data = $elq->paginate($request->limit);
         }else{
             $data = $elq->get();
         }

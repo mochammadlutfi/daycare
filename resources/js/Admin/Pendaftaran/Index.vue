@@ -4,6 +4,10 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Pendaftaran</span>
                 <div class="space-x-1">
+                    <!-- <el-button type="primary" @clik.prevent="openModal">
+                        <i class="fa fa-plus me-1"></i>
+                        Tambah
+                    </el-button> -->
                     <a :href="route('admin.register.create')" class="ep-button ep-button--primary">
                         <i class="fa fa-plus me-1"></i>
                         Tambah

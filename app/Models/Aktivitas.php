@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AntarJemput extends Model
+class Aktivitas extends Model
 {
-    protected $table = 'antarjemput';
+    protected $table = 'aktivitas';
     protected $primaryKey = 'id';
 
     protected $fillable = [
