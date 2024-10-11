@@ -14,91 +14,98 @@
                             Tolak
                         </el-button>
                     </template>
+                    <!-- <l -->
+                     <Link class="ep-button ep-button--primary" :href="route('admin.anak.spp', {id : data.id})">
+                    </Link>
                 </div>
             </div>
             <div class="">
-            <el-tabs v-model="activeTab" class="block rounded-2" @tab-click="updateTab" stretch>
+            <el-tabs v-model="activeTab" class="block rounded-2" stretch>
                 <el-tab-pane label="Informasi Anak" name="anak">
-                    <div class="block-content">
+                    <div class="block-content pt-2 pb-4 px-4">
                         <el-row :gutter="20">
-                            <el-col :md="12">
+                            <el-col :md="6">
+                                <upload-image v-model="data.image" width="100%" :height="230" class="mb-4" @onChange="uploadImage"/>
+
+                                <el-button type="primary" class="w-100" @click.prevent="openKartu">
+                                    Kartu Siswa
+                                </el-button>
+                            </el-col>
+                            <el-col :md="18">
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Nama Lengkap</el-col>
+                                    <el-col :md="8">Nama Lengkap</el-col>
                                     <el-col :md="14">
                                         : <span class="fw-semibold">{{ data.nama }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Nama Panggilan</el-col>
+                                    <el-col :md="8">Nama Panggilan</el-col>
                                     <el-col :md="14">
                                         : <span class="fw-semibold">{{ data.username }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Jenis Kelamin</el-col>
+                                    <el-col :md="8">Jenis Kelamin</el-col>
                                     <el-col :md="14">
                                         : <span class="fw-semibold">{{ (data.jk == 'L' ? 'Laki-Laki' : 'Perempuan') }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Tempat / Tanggal Lahir</el-col>
+                                    <el-col :md="8">Tempat / Tanggal Lahir</el-col>
                                     <el-col :md="14">
                                         :  <span class="fw-semibold">{{ data.tmp_lahir }} / {{ data.tgl_lahir }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Anak Ke</el-col>
+                                    <el-col :md="8">Anak Ke</el-col>
                                     <el-col :md="14">
                                         :  <span class="fw-semibold">{{ data.anak_ke }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Jarak Rumah</el-col>
+                                    <el-col :md="8">Jarak Rumah</el-col>
                                     <el-col :md="14">
                                         :  <span class="fw-semibold">{{ data.jarak }} Km</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Alamat</el-col>
+                                    <el-col :md="8">Alamat</el-col>
                                     <el-col :md="14">
                                         :  <span class="fw-semibold">{{ data.alamat }}</span>
                                     </el-col>
                                 </el-row>
-                            </el-col>
-                            <el-col :md="12">
-                                
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Sosialisasi dengan lingkungan</el-col>
+                                    <el-col :md="8">Sosialisasi dengan lingkungan</el-col>
                                     <el-col :md="14">
-                                        :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan_anak }}</span>
+                                        :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan_anak ?? '-' }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Sakit yang pernah diderita</el-col>
+                                    <el-col :md="8">Sakit yang pernah diderita</el-col>
                                     <el-col :md="14">
-                                        :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita_anak }}</span>
+                                        :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita_anak ?? '-' }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Makanan yang disukai</el-col>
+                                    <el-col :md="8">Makanan yang disukai</el-col>
                                     <el-col :md="14">
-                                        :  <span class="fw-semibold">{{ data.makanan_yang_disukai_anak }}</span>
+                                        :  <span class="fw-semibold">{{ data.makanan_yang_disukai_anak  ?? '-'}}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Makanan yang tidak disukai</el-col>
+                                    <el-col :md="8">Makanan yang tidak disukai</el-col>
                                     <el-col :md="14">
-                                        :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai_anak }}</span>
+                                        :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai_anak ?? '-' }}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Memiliki Alergi</el-col>
+                                    <el-col :md="8">Memiliki Alergi</el-col>
                                     <el-col :md="14">
-                                        :  <span class="fw-semibold">{{ data.memiliki_alergi_anak }}</span>
+                                        :  <span class="fw-semibold">{{ data.memiliki_alergi_anak  ?? '-'}}</span>
                                     </el-col>
                                 </el-row>
                                 <el-row class="mb-2" :gutter="10">
-                                    <el-col :md="10">Scan Akta Kelahiran</el-col>
+                                    <el-col :md="8">Scan Akta Kelahiran</el-col>
                                     <el-col :md="14">
                                         :  
                                     </el-col>
@@ -300,40 +307,22 @@
             </el-tabs>
             </div>
             
+            <el-dialog v-model="modalKartu" title="Kartu Siswa" width="400px">
+                <img :src="kartu" class="img-fluid"/>
+            </el-dialog>
         </div>
-        <el-dialog v-model="showModal" :title="modalTitle" width="40%">
-            <el-form :model="form" label-position="top">
-                <template v-if="form.status == 'terima'">
-                    <el-form-item label="Kelompok" :error="errors.kelompok_id">
-                        <select-kelompok v-model="form.kelompok_id"/>
-                    </el-form-item>
-                </template>
-                <template v-else>
-                    <el-form-item label="Alasan" :error="errors.alasan">
-                        <el-input type="textarea" v-model="form.alasan"/>
-                    </el-form-item>
-                </template>
-                <div class="text-end">
-                    <el-button @click="closeModal">
-                        <i class="fa fa-close me-2"></i>
-                        Batal
-                    </el-button>
-                    <el-button type="primary" @click="submit">
-                        <i class="fa fa-check me-2"></i>
-                        Simpan
-                    </el-button>
-                </div>
-            </el-form>
-        </el-dialog>
     </base-layout>
 </template>
 
 <script>
-import SelectKelompok from '@/Components/SelectKelompok.vue';
+import UploadImage from '@/Components/UploadImage.vue';
+import { Link } from '@inertiajs/vue3';
+import { data } from 'autoprefixer';
 import dayjs from 'dayjs';
 export default {
     components : {
-        SelectKelompok
+        UploadImage,
+        Link
     },
     props :{
         data : {
@@ -347,12 +336,6 @@ export default {
         return {
             showModal : false,
             modalTitle : 'Terima Pendaftaran',
-            loadingForm : false,
-            form : {
-                kelompok_id : null,
-                status : null,
-                alasan : null,
-            },
             activeTab : 'anak',
             invoice : [],
             page : 1,
@@ -365,17 +348,26 @@ export default {
                 page : 1,
                 limit : 25,
                 q : ""
-            }
+            },
+            // formImage : useForm({
+            //     image : this.data.image,
+            // }),
+            modalKartu : false,
+            kartu : null,
         }
     },
     async mounted() {
         await this.fetchData();
     },
     methods :{
-        openModal(status){
-            this.form.status = status;
-            this.showModal = true;
-            this.modalTitle = (status == 'terima') ? 'Terima Pendaftaran' : 'Tolak Pendaftaran';
+        async openKartu(){
+            const response = await axios.get(this.route("admin.anak.kartu", { id : this.data.id}), {
+                responseType: 'blob'
+            });
+            if(response.status == 200){
+                this.kartu =  URL.createObjectURL(response.data);
+            }
+            this.modalKartu = true;
         },
         closeModal(){
             this.modalTitle = 'Terima Pendaftaran';
@@ -384,23 +376,28 @@ export default {
             this.form.alasan = null;
             this.showModal = false;
         },
-        updateTab(tab, event){
-            console.log(tab, event)
-        },
-        submit() {
-            this.loadingForm = true;
-            let form = this.$inertia.form(this.form);
-            form.post(this.route('admin.register.update', {id : this.data.id}), {
+        uploadImage(val)
+        {
+            let type = '';
+            if(val){
+                type = 'upload'
+            }else{
+                type = 'delete';
+            }
+            const form = this.$inertia.form({
+                image : val,
+                type : type,
+            });
+            form.post(this.route('admin.anak.foto', {id : this.data.id}), {
                 preserveScroll: true,
                 onFinish:() => {
-                    this.loadingForm = false;
+
                 },
                 onSuccess: () => {
                     ElMessage({
                         type: 'success',
                         message: 'Data Berhasil Disimpan!',
                     });
-                    this.onCloseForm();
                 },
             });
         },

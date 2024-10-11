@@ -5,7 +5,6 @@
                 <img class="img-fluid" :src="cropImg" />
                 <div class="img-upload-actions">
                     <el-button type="danger" @click="removeImage" class="text-white" size="large">
-                        <!-- <Icon icon="clarity:trash-solid" :inline="true" /> -->
                         <i class="fa fa-trash"></i>
                     </el-button
                     >
@@ -40,7 +39,7 @@
 import VueCropper from "vue-cropperjs";
 import "cropperjs/dist/cropper.css";
 export default {
-    name: 'AvatarUpload',
+    name: 'UploadAvatar',
     components: {
         VueCropper,
     },

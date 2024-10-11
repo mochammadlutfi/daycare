@@ -13,11 +13,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Image;
+use Storage;
+use Illuminate\Support\Str;
+
 
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Models\Anak;
 use App\Models\Invoice;
-use App\Models\Paket;
+use App\Models\InvoiceDetail;
+use App\Models\paket;
 class PendaftaranController extends Controller
 {
 
@@ -70,40 +75,139 @@ class PendaftaranController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $this->validate($request->all());
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
+        // dd($request->all());
+
+
+        // $validator = $this->validate($request->all());
+        // if ($validator->fails()){
+        //     return back()->withErrors($validator->errors());
+        // }else{
             DB::beginTransaction();
             try{
-                
-                $data = new Anak();
-                $data->nik = $request->nik;
-                $data->nama = $request->nama;
-                $data->jk = $request->jk;
-                $data->tgl_lahir = Carbon::parse($request->tglLahir)->format('Y-m-d');
-                $data->tmp_lahir = $request->tmpLahir;
-                $data->alamat = $request->alamat;
-                $data->tps = $request->tps;
-                $data->rt = $request->rt;
-                $data->rw = $request->rw;
-                $data->kota_id = $request->kota_id;
-                $data->kecamatan_id = $request->kecamatan_id;
-                $data->kelurahan_id = $request->kelurahan_id;
-                $data->email = $request->email;
-                $data->phone = $request->phone;
-                $data->ref = $request->ref;
-                $data->user_id = $request->user_id;
 
-                if(!empty($request->file('image'))){
-                    $data->image = $this->uploadImage($request->file('image'), $user_id);
+                if($request->has_account == "0"){
+                    $user = new User();
+                    $user->nama = $request->nama_akun;
+                    $user->email = $request->email_akun;
+                    $user->password = Hash::make($request->password_akun);
+                    $user->save();
+                }else{
+                    $user = User::where('id', $request->akun_id)->first();
                 }
                 
-                if(!empty($request->file('ktp'))){
-                    $data->ktp = $this->uploadImage($request->file('ktp'), $user_id, 'ktp');
+                $ktpAyahDir = null;
+                $ktpIbuDir = null;
+                $kkDir = null;
+                $akteAnakDir = null;
+    
+                if (is_file($request->ktp_ayah)) {
+                    $ktpAyahDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ayah')->getClientOriginalExtension();
+                    $directory = Storage::disk('public')->put($ktpAyahDir, fopen($request->file('ktp_ayah'), 'r+'));
+                }
+    
+                if (is_file($request->ktp_ibu)) {
+                    $ktpIbuDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ibu')->getClientOriginalExtension();
+                    $directory = Storage::disk('public')->put($ktpIbuDir, fopen($request->file('ktp_ibu'), 'r+'));
+                }
+    
+                if (is_file($request->kk)) {
+                    $kkDir = 'scan/' . Str::random(32) . '.' . $request->file('kk')->getClientOriginalExtension();
+                    $directory = Storage::disk('public')->put($kkDir, fopen($request->file('kk'), 'r+'));
+                }
+    
+                if (is_file($request->scan_akte_anak)) {
+                    $akteAnakDir = 'scan/' . Str::random(32) . '.' . $request->file('scan_akte_anak')->getClientOriginalExtension();
+                    $directory = Storage::disk('public')->put($kkDir, fopen($request->file('scan_akte_anak'), 'r+'));
                 }
 
-                $data->save();
+                $orang_tua = UserDetail::updateOrCreate(["user_id" => $user->id], [
+                    "user_id" => $user->id,
+                    "nama_ayah" => $request->nama_ayah,
+                    "tmp_lahir_ayah" => $request->tmp_lahir_ayah,
+                    "tgl_lahir_ayah" => $request->tgl_lahir_ayah,
+                    "telp_ayah" => $request->telp_ayah,
+                    "alamat_ayah" => $request->alamat_ayah,
+                    "pekerjaan_ayah" => $request->pekerjaan_ayah,
+                    "penghasilan_ayah" => $request->penghasilan_ayah,
+                    "alamat_kantor_ayah" => $request->alamat_kantor_ayah,
+                    "pendidikan_ayah" => $request->pendidikan_ayah,
+                    "agama_ayah" => $request->agama_ayah,
+    
+                    "nama_ibu" => $request->nama_ibu,
+                    "tmp_lahir_ibu" => $request->tmp_lahir_ibu,
+                    "tgl_lahir_ibu" => $request->tgl_lahir_ibu,
+                    "telp_ibu" => $request->telp_ibu,
+                    "alamat_ibu" => $request->alamat_ibu,
+                    "pekerjaan_ibu" => $request->pekerjaan_ibu,
+                    "penghasilan_ibu" => $request->penghasilan_ibu,
+                    "alamat_kantor_ibu" => $request->alamat_kantor_ibu,
+                    "pendidikan_ibu" => $request->pendidikan_ibu,
+                    "agama_ibu" => $request->agama_ibu,
+    
+                    "scan_ktp_ayah" => $ktpAyahDir ?? $request->ktp_ayah,
+                    "scan_ktp_ibu" => $ktpIbuDir ?? $request->ktp_ibu,
+                    "scan_kk" => $kkDir ?? $request->kk,
+                ]);
+
+                $anak = new Anak();
+                $anak->user_id = $user->id;
+                $anak->nama = $request->nama_anak;
+                $anak->username = $request->username;
+                $anak->jk = $request->jk_anak;
+                $anak->anak_ke = $request->anak_ke;
+                $anak->tmp_lahir = $request->tmp_lahir_anak;
+                $anak->tgl_lahir = $request->tgl_lahir_anak;
+                $anak->alamat = $request->alamat_anak;
+                $anak->jarak = $request->jarak;
+                $anak->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan;
+                $anak->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita;
+                $anak->makanan_yang_disukai = $request->makanan_yang_disukai;
+                $anak->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai;
+                $anak->alergi = $request->memiliki_alergi;
+                $anak->isAntarJemput = $request->isLaundry ? 1 : 0;
+                $anak->isLaundry = $request->isAntarJemput ? 1 : 0;
+                $anak->scan_akte = $akteAnakDir ?? $request->scan_akte_anak;
+                $anak->paket_id = $request->paket_id;
+                $anak->status = 'Pending';
+                $anak->save();
+
+                $paket = Paket::where('id', $request->paket_id)->first();
+                
+                $invoice = new Invoice();
+                $invoice->nomor = $this->getNomor();
+                $invoice->tgl = Carbon::now();
+                $invoice->user_id = $user->id;
+                $invoice->anak_id = $anak->id;
+                $invoice->uid = uniqid();
+                $invoice->metode = 'Tunai';
+                $invoice->status = 'paid';
+                $invoice->tgl_tempo = Carbon::now()->addDays(7);
+                $invoice->total = $paket->pembangunan + $paket->pendaftaran + $paket->spp;
+                $invoice->save();
+
+
+                $linesData = collect([
+                    [
+                        'tipe' => 'Pembangunan',
+                        'harga' => $paket->pembangunan
+                    ],
+                    [
+                        'tipe' => 'Pendaftaran',
+                        'harga' => $paket->pendaftaran
+                    ],
+                    [
+                        'tipe' => 'SPP',
+                        'harga' => $paket->spp
+                    ]
+                ]);
+
+                foreach($linesData as $i){
+                    $line = new InvoiceDetail();
+                    $line->tipe = $i['tipe'];
+                    $line->harga = $i['harga'];
+                    $line->qty = 1;
+                    $invoice->detail()->save($line);
+                }
 
             }catch(\QueryException $e){
                 DB::rollback();
@@ -111,8 +215,8 @@ class PendaftaranController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.saksi.index');
-        }
+            return redirect()->route('admin.register.index');
+        // }
     }
 
     /**
@@ -268,6 +372,24 @@ class PendaftaranController extends Controller
 		})->save($destinationPath.'/'.$file_name, 90);
 
         return $return;
+    }
+
+    private function getNomor()
+    {
+
+        $q = Invoice::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));
+
+        $code = 'DC/';
+        $no = 1;
+        date_default_timezone_set('Asia/Jakarta');
+
+        if($q->count() > 0){
+            foreach($q->get() as $k){
+                return $code . date('ymd') .'/'.sprintf("%05s", abs(((int)$k->kd_max) + 1));
+            }
+        }else{
+            return $code . date('ymd') .'/'. sprintf("%05s", $no);
+        }
     }
 
     private function validate($data, $editMode = false){

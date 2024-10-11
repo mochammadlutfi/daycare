@@ -71,7 +71,6 @@
                                 </el-row>
                             </el-col>
                             <el-col :md="12">
-                                
                                 <el-row class="mb-2" :gutter="10">
                                     <el-col :md="10">Sosialisasi dengan lingkungan</el-col>
                                     <el-col :md="14">
@@ -106,6 +105,12 @@
                                     <el-col :md="10">Scan Akta Kelahiran</el-col>
                                     <el-col :md="14">
                                         :  
+                                        <a :href="`/uploads/${data.scan_akte}`" class="ep-button ep-button--primary" target="_blank" v-if="data.scan_akte">
+                                            Lihat Akte Kelahiran
+                                        </a>
+                                        <template v-else>
+                                            -
+                                        </template>
                                     </el-col>
                                 </el-row>
                             </el-col>

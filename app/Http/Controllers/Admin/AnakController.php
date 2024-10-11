@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Image;
+use Intervention\Image\ImageManagerStatic;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Storage;
 
 use App\Models\User;
 use App\Models\Anak;
 
-
+use PDF;
 use Excel;
 use App\Exports\AnakExport;
 
@@ -41,69 +44,7 @@ class AnakController extends Controller
     {
         return Inertia::render('Anak/Index');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return Inertia::render('Anak/Form');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
-     */
-    public function store(Request $request)
-    {
-        // dd($request->all());
-        $validator = $this->validate($request->all());
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-                
-                $data = new Anak();
-                $data->nik = $request->nik;
-                $data->nama = $request->nama;
-                $data->jk = ($request->jk == 'Laki-Laki') ? 'L' : 'P';
-                $data->tgl_lahir = Carbon::parse($request->tglLahir)->format('Y-m-d');
-                $data->tmp_lahir = $request->tmpLahir;
-                $data->alamat = $request->alamat;
-                $data->tps = $request->tps;
-                $data->rt = $request->rt;
-                $data->rw = $request->rw;
-                $data->kota_id = $request->kota_id;
-                $data->kecamatan_id = $request->kecamatan_id;
-                $data->kelurahan_id = $request->kelurahan_id;
-                $data->email = $request->email;
-                $data->phone = $request->phone;
-                $data->ref = $request->ref;
-                $data->user_id = $request->user_id;
-
-                if(!empty($request->file('image'))){
-                    $data->image = $this->uploadImage($request->file('image'), $user_id);
-                }
-                
-                if(!empty($request->file('ktp'))){
-                    $data->ktp = $this->uploadImage($request->file('ktp'), $user_id, 'ktp');
-                }
-
-                $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                dd($e);
-            }
-
-            DB::commit();
-            return redirect()->route('admin.saksi.index');
-        }
-    }
-
+    
     /**
      * Show the specified resource.
      * @param int $id
@@ -273,35 +214,83 @@ class AnakController extends Controller
         return response()->json($data);
     }
 
-    private function uploadImage($file, $kota_id , $type = 'avatar'){
-
-        $file_name = $kota_id. '-' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-        $imgFile = Image::make($file->getRealPath());
-        if($type == 'avatar'){
-            $destinationPath = storage_path('app/public/'.$kota_id.'/saksi');
-            $return = '/uploads/'.$kota_id.'/saksi/'.$file_name;
+    public function foto($id, Request $request)
+    {
+        // dd($request->all());
+        $anak = Anak::where('id', $id)->first();
+        if($request->type == 'upload'){
+            $image = $request->file('image');
+            $imgFile = Image::make($image->getRealPath())->resize(800, 800);
+    
+            $filePath = 'anak/' . time() . '.' . $image->getClientOriginalExtension();
+            Storage::disk('public')->put($filePath, (string) $imgFile->encode());
+    
+            $anak->image = '/uploads/'.$filePath;
         }else{
-            $destinationPath = storage_path('app/public/'.$kota_id.'/ktp');
-            $return = '/uploads/'.$kota_id.'/ktp/'.$file_name;
-        }
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 755, true);
-        }
-
-        if($type == 'avatar'){
-            $width = 800;
-            $heigth = 800;
-        }else{
-            $width = 1200;
-            $heigth = 337;
+            if(Storage::disk('public')->exists($anak->image)){
+                Storage::disk('public')->delete($anak->image);
+            }
+            $anak->image = null;
         }
 
-        $imgFile->resize($width, $heigth, function ($constraint) {
-		    $constraint->aspectRatio();
-		})->save($destinationPath.'/'.$file_name, 90);
+        $anak->save();
 
-        return $return;
+        return redirect()->route('admin.anak.show', $id);
+    }
+
+    
+    
+    public function pdf($id)
+    {
+        $data = Invoice::with(['user','detail'])->where('id', $id)
+        ->first();
+
+        $pdf = PDF::loadView('pdf.invoice', [
+            'data' => $data,
+        ], [ ], [
+            'format' => 'A4-P'
+        ]);
+
+        return $pdf->stream('Invoice '. $data->nomor .'.pdf');
+    }
+
+    public function kartu($id)
+    {
+        $anak = Anak::where('id', $id)->first();
+
+        $qrCode = base64_encode(QrCode::format('png')->size(120)->generate($anak->id));
+        $qrCodeImage = Image::make(base64_decode($qrCode));
+
+        $backgroundPath = asset('/images/card-bg.png');
+        $img = ImageManagerStatic::make($backgroundPath)->resize(400, 600);
+
+        // Insert User Image into Base ID Card
+        $anakImage = $anak->image ?? '/images/avatar.png';
+
+        $userImage = ImageManagerStatic::make(asset($anakImage))->resize(113, 113);
+        $img->insert($userImage, 'top-left', 145, 184);
+
+        // Insert QR Code into Base ID Card
+        $img->insert($qrCode, 'bottom-center', 125, 80);
+
+        // Add Text
+        $img->text($anak->nama, 200, 350, function($font) {
+            $font->file(base_path('resources/fonts/OpenSans/OpenSans-Bold.ttf'));
+            $font->size(24);
+            $font->color('#000');
+            $font->align('center');
+            $font->valign('bottom');
+        });
+        
+        $img->text("ID: $anak->id", 200, 370, function($font) {
+            $font->file(base_path('resources/fonts/OpenSans/OpenSans-Bold.ttf'));
+            $font->size(18);
+            $font->color('#000');
+            $font->align('center');
+            $font->valign('bottom');
+        });
+
+        return $img->response('png');
     }
 
     private function validate($data, $editMode = false){

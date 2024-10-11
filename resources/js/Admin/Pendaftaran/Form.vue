@@ -507,7 +507,7 @@ export default {
         return {
             form : {
                 akun_id : null,
-                has_account : 0,
+                has_account : 1,
                 nama_akun : null,
                 email_akun : null,
                 password_akun : null,
@@ -553,7 +553,7 @@ export default {
                 isLaundry: false,
                 paket_id : null,
             },
-            step : 4,
+            step : 1,
             loading : false,
             selectPaket : null,
             errors_anak : {},
@@ -674,38 +674,19 @@ export default {
     },
     methods : {
         setValue(){
-            this.form.nama_ayah = this.value.nama_ayah;
-            this.form.tmp_lahir_ayah = this.value.tmp_lahir_ayah;
-            this.form.tgl_lahir_ayah = this.value.tgl_lahir_ayah;
-            this.form.telp_ayah = this.value.telp_ayah;
-            this.form.alamat_ayah = this.value.alamat_ayah;
-            this.form.pekerjaan_ayah = this.value.pekerjaan_ayah;
-            this.form.penghasilan_ayah = this.value.penghasilan_ayah;
-            this.form.alamat_kantor_ayah = this.value.alamat_kantor_ayah;
-            this.form.agama_ayah = this.value.agama_ayah;
-            this.form.pendidikan_ayah = this.value.pendidikan_ayah;
-
-            this.form.nama_ibu = this.value.nama_ibu;
-            this.form.tmp_lahir_ibu = this.value.tmp_lahir_ibu;
-            this.form.tgl_lahir_ibu = this.value.tgl_lahir_ibu;
-            this.form.telp_ibu = this.value.telp_ibu;
-            this.form.alamat_ibu = this.value.alamat_ibu;
-            this.form.pekerjaan_ibu = this.value.pekerjaan_ibu;
-            this.form.penghasilan_ibu = this.value.penghasilan_ibu;
-            this.form.alamat_kantor_ibu = this.value.alamat_kantor_ibu;
-            this.form.agama_ibu = this.value.agama_ibu;
-            this.form.pendidikan_ibu = this.value.pendidikan_ibu;
-
-            
-            this.form.ktp_ayah = this.value.scan_ktp_ayah;
-            this.form.ktp_ibu = this.value.scan_ktp_ibu;
-            this.form.kk = this.value.scan_kk;
+            // alert('sadas');
+            // const self = this;
+            // self.form.has_account = 1;
+            // self.form.akun_nama = 'User 1';
+            // self.form.akun_email = 'user1@demo.com';
+            // self.form.akun_password = 'admin123';
+            // self.form.akun_password_confirmation = 'admin123';
             // if(level)
         },
         submit() {
             this.loading = true;
-            let form = this.$inertia.form(this.formAnak);
-            let url = this.route('register.store');
+            let form = this.$inertia.form(this.form);
+            let url = this.route('admin.register.store');
             form.post(url, {
                 preserveScroll: true,
                 onFinish:() => {
@@ -736,7 +717,7 @@ export default {
 
         },
         changePaket(data){
-            console.log(data);
+            // console.log(data);
             this.selectPaket = data;
         },
         updateStep(){
@@ -799,6 +780,9 @@ export default {
                 callback();
             }
         },
+    },
+    mounted(){
+        this.setValue();
     }
 }
 </script>

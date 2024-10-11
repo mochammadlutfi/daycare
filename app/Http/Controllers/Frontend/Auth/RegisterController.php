@@ -387,6 +387,7 @@ class RegisterController extends Controller
         
                 Notification::route('mail', $user->email)
                 ->notify(new RegisterNotification($invoiceFile->output(), $pdfData));
+                
             }catch(\QueryException $e){
                 DB::rollback();
                 return back();

@@ -200,8 +200,11 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/data', 'AnakController@data')->name('data');
             Route::get('/report', 'AnakController@report')->name('report');
             Route::get('/{id}', 'AnakController@show')->name('show');
+            Route::get('/{id}/kartu', 'AnakController@kartu')->name('kartu');
+            Route::get('/{id}/spp', 'AnakController@spp')->name('spp');
             Route::get('/{id}/edit','AnakController@edit')->name('edit');
             Route::post('/{id}/update','AnakController@update')->name('update');
+            Route::post('/{id}/foto','AnakController@foto')->name('foto');
             Route::delete('/{id}/hapus','AnakController@destroy')->name('delete');
         });
 
@@ -240,15 +243,19 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/{id}/edit','KelompokController@edit')->name('edit');
             Route::post('/{id}/update','KelompokController@update')->name('update');
             Route::delete('/{id}/delete','KelompokController@destroy')->name('delete');
-
-            
-            Route::prefix('/{kelompok}/jadwal')->name('jadwal.')->group(function () {
-                Route::get('/', 'JadwalController@index')->name('index');
-                Route::get('/data', 'JadwalController@data')->name('data');
-                Route::post('/store','JadwalController@store')->name('store');
-                Route::post('/{id}/update','JadwalController@update')->name('update');
-                Route::delete('/{id}/hapus','JadwalController@destroy')->name('delete');
-            });
+        });
+        
+        Route::prefix('/jadwal')->name('jadwal.')->group(function () {
+            Route::get('/', 'JadwalController@index')->name('index');
+            Route::get('/data', 'JadwalController@data')->name('data');
+            Route::post('/store','JadwalController@store')->name('store');
+            Route::get('/{id}','JadwalController@detail')->name('detail');
+            Route::post('/{id}/store','JadwalController@detailStore')->name('detail.store');
+            Route::post('/{id}/update','JadwalController@update')->name('update');
+            Route::delete('/{id}/hapus','JadwalController@destroy')->name('delete');
+            Route::get('/{id}/data','JadwalController@detailData')->name('detail.data');
+            Route::post('/{id}/{detail}/upate','JadwalController@detailUpdate')->name('detail.update');
+            Route::delete('/{id}/{detail}/hapus','JadwalController@detailDestroy')->name('detail.delete');
         });
         
         Route::prefix('/kegiatan')->name('kegiatan.')->group(function () {

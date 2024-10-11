@@ -18,14 +18,9 @@ class Jadwal extends Model
         return $this->belongsTO(Kelompok::class, 'kelompok_id');
     }
 
-    public function jenis()
+    public function admin()
     {
-        return $this->belongsTO(JenisKegiatan::class, 'jenis_id');
-    }
-
-    public function kegiatan()
-    {
-        return $this->belongsTO(Kegiatan::class, 'kegiatan_id');
+        return $this->belongsTO(Admin::class, 'admin_id');
     }
     
 }

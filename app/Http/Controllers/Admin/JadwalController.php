@@ -15,6 +15,7 @@ use Storage;
 
 use App\Models\Kelompok;
 use App\Models\Jadwal;
+use App\Models\JadwalDetail;
 
 
 class JadwalController extends Controller
@@ -28,41 +29,23 @@ class JadwalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        // dd('sa');
-        $kelompok = Kelompok::where('id', $id)->first();
-        $hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-
-        return Inertia::render('Jadwal',[
-            'kelompok' => $kelompok,
-            'hari' => $hari
-        ]);
+        return Inertia::render('Jadwal/Index');
     }
+    
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store($kelompok, Request $request)
+    public function store(Request $request)
     {
         // dd($request->all());
         $rules = [
-            'jenis_id' => 'required',
-            'kegiatan_id' => 'required',
-            'hari' => 'required',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required',
+            'kelompok_id' => 'required',
+            'periode' => 'required',
         ];
 
         $pesan = [
-            'jenis_id.required' => 'Jenis Kegiatan Wajib Diisi!',
-            'kegiatan_id.required' => 'Kegiatan Wajib Diisi!',
-            'hari.required' => 'Hari Wajib Diisi!',
-            'jam_mulai.required' => 'Jam Mulai Wajib Diisi!',
-            'jam_selesai.required' => 'Jam Selesai Wajib Diisi!',
+            'kelompok_id.required' => 'Kelompok Wajib Diisi!',
+            'periode.required' => 'Tanggal periode Wajib Diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $pesan);
@@ -74,32 +57,39 @@ class JadwalController extends Controller
                 $user = auth()->guard('admin')->user();
 
                 $data = new Jadwal();
-                $data->hari = $request->hari;
-                $data->kelompok_id = $kelompok;
-                $data->jenis_id = $request->jenis_id;
-                $data->kegiatan_id = $request->kegiatan_id;
-                $data->jam_mulai = $request->jam_mulai;
-                $data->jam_selesai = $request->jam_selesai;
+                $data->kelompok_id = $request->kelompok_id;
+                $data->tgl_mulai = Carbon::parse($request->periode[0]);
+                $data->tgl_selesai = Carbon::parse($request->periode[1]);
+                $data->admin_id = $user->id;
                 $data->save();
             }catch(\QueryException $e){
                 DB::rollback();
                 return back();
             }
             DB::commit();
-            return redirect()->route('admin.kelompok.jadwal.index', [$kelompok]);
+            return redirect()->route('admin.jadwal.detail', $data->id);
         }
     }
 
+    public function detail($id)
+    {
+        $jadwal = Jadwal::with(['kelompok'])->where('id', $id)->first();
+        $hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
+        return Inertia::render('Jadwal/Detail',[
+            'jadwal' => $jadwal,
+            'hari' => $hari
+        ]);
+    }
+
     /**
-     * Update the specified resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, $kelompok)
+    public function detailStore($id, Request $request)
     {
-        // dd($request->all());
         $rules = [
             'jenis_id' => 'required',
             'kegiatan_id' => 'required',
@@ -124,9 +114,9 @@ class JadwalController extends Controller
             try{
                 $user = auth()->guard('admin')->user();
 
-                $data = Jadwal::where('id', $id)->first();
+                $data = new JadwalDetail();
+                $data->jadwal_id = $id;
                 $data->hari = $request->hari;
-                $data->kelompok_id = $request->kelompok_id;
                 $data->jenis_id = $request->jenis_id;
                 $data->kegiatan_id = $request->kegiatan_id;
                 $data->jam_mulai = $request->jam_mulai;
@@ -137,7 +127,57 @@ class JadwalController extends Controller
                 return back();
             }
             DB::commit();
-            return redirect()->route('admin.kelompok.jadwal.index', $request->kelompok_id);
+            return redirect()->route('admin.jadwal.detail', $id);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function detailUpdate(Request $request, $id, $detail)
+    {
+        $rules = [
+            'jenis_id' => 'required',
+            'kegiatan_id' => 'required',
+            'hari' => 'required',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required',
+        ];
+
+        $pesan = [
+            'jenis_id.required' => 'Jenis Kegiatan Wajib Diisi!',
+            'kegiatan_id.required' => 'Kegiatan Wajib Diisi!',
+            'hari.required' => 'Hari Wajib Diisi!',
+            'jam_mulai.required' => 'Jam Mulai Wajib Diisi!',
+            'jam_selesai.required' => 'Jam Selesai Wajib Diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return back()->withErrors($validator->errors());
+        }else{
+            DB::beginTransaction();
+            try{
+                $user = auth()->guard('admin')->user();
+
+                $data = JadwalDetail::where('id', $detail)->first();
+                $data->hari = $request->hari;
+                $data->jadwal_id = $id;
+                $data->jenis_id = $request->jenis_id;
+                $data->kegiatan_id = $request->kegiatan_id;
+                $data->jam_mulai = $request->jam_mulai;
+                $data->jam_selesai = $request->jam_selesai;
+                $data->save();
+            }catch(\QueryException $e){
+                DB::rollback();
+                return back();
+            }
+            DB::commit();
+            return redirect()->route('admin.jadwal.detail', $id);
         }
     }
 
@@ -147,29 +187,49 @@ class JadwalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $kelompok)
+    public function detailDestroy($id, $detail)
     {
         DB::beginTransaction();
         try{
-            $hapus_db = Jadwal::destroy($id);
+            $hapus_db = JadwalDetail::destroy($detail);
         }catch(\QueryException $e){
             DB::rollback();
             return back();
         }
 
         DB::commit();
-        return redirect()->route('admin.kelompok.jadwal.index', $kelompok);
+        return redirect()->route('admin.jadwal.detail', $id);
     }
 
-    public function data($kelompok, Request $request)
+    public function data(Request $request)
+    {
+        $sort = !empty($request->sort) ? $request->sort : 'id';
+        $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
+        $limit = $request->limit;
+
+        $elq = Jadwal::with(['kelompok', 'admin'])
+        ->when($request->search, function($q, $search){
+            return $q->where('kelompok_id', 'Like', '%'.$search.'%');
+        })
+        ->orderBy($sort, $sortDir);
+
+        if($limit){
+            $data = $elq->paginate($limit);
+        }else{
+            $data = $elq->get();
+        }
+
+        return response()->json($data);
+    }
+
+    public function detailData($id, Request $request)
     {
         $hariArray = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
         $data = [];
-        $jadwal = Jadwal::with(['jenis', 'kegiatan'])
-        ->where('kelompok_id', $kelompok)->orderBy('jam_mulai', "ASC")->get();
+        $jadwal = JadwalDetail::with(['jenis', 'kegiatan'])
+        ->where('jadwal_id', $id)->orderBy('jam_mulai', "ASC")->get();
 
-        // dd($jadwal);
         foreach ($hariArray as $hari) {
             $data[$hari] = $jadwal->filter(function($item) use ($hari) {
                 return $item->hari === $hari;
