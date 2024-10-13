@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use App\Models\Anak;
 use App\Models\Absen;
 use App\Models\AbsenDetail;
+use App\Exports\AbsenExport;
+use Excel;
 
 class AbsenController extends Controller
 {
@@ -338,6 +340,15 @@ class AbsenController extends Controller
 
 
         return response()->json($data);
+    }
+
+    
+    public function report(Request $request)
+    {
+        $kelompok = $request->kelompok;
+        $tgl = $request->tgl;
+
+        return Excel::download(new AbsenExport($kelompok, $tgl), 'Data Report Absen.xlsx');
     }
     
 }

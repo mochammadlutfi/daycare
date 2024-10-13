@@ -12,6 +12,8 @@ use Carbon\Carbon;
 
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
+use App\Exports\InvoiceExport;
+use Excel;
 
 class InvoiceController extends Controller
 {
@@ -93,34 +95,7 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'name' => 'required',
-            'wilayah' => 'required',
-        ];
 
-        $pesan = [
-            'name.required' => 'Nama Dapil Wajib Diisi!',
-            'wilayah.required' => 'Wilayah Dapil Wajib Diisi!',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-                    $data = Dapil::where('id', $id)->first();
-                    $data->name = $request->name;
-                    $data->daerah_id = implode(',', $request->wilayah);
-                    $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return back();
-            }
-            DB::commit();
-            return redirect()->route('dapil.index');
-        }
     }
 
     /**
@@ -162,5 +137,14 @@ class InvoiceController extends Controller
         ->paginate($limit);
 
         return response()->json($data);
+    }
+
+    
+    public function report(Request $request)
+    {
+        $kelompok = $request->kelompok;
+        $paket = $request->paket;
+
+        return Excel::download(new InvoiceExport($kelompok, $paket), 'Data Report Invoice.xlsx');
     }
 }

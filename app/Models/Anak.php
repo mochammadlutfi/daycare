@@ -16,6 +16,11 @@ class Anak extends Model
         'id', 'name',
     ];
     
+    public function paket()
+    {
+        return $this->belongsTo(Paket::class, 'paket_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

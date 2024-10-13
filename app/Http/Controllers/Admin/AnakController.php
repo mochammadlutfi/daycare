@@ -23,7 +23,7 @@ use App\Models\Anak;
 use PDF;
 use Excel;
 use App\Exports\AnakExport;
-
+use App\Models\Invoice;
 class AnakController extends Controller
 {
 
@@ -240,18 +240,58 @@ class AnakController extends Controller
 
     
     
-    public function pdf($id)
+    public function spp($id)
     {
-        $data = Invoice::with(['user','detail'])->where('id', $id)
-        ->first();
+        $invoices = Invoice::with(['user','detail'])->where('anak_id', $id)
+        ->get();
 
-        $pdf = PDF::loadView('pdf.invoice', [
-            'data' => $data,
+        $anak = Anak::with(['user' => function($q){
+            return $q->with('detail');
+        }, 'kelompok'
+        ])
+        ->where('id', $id)->first();
+
+        $firstInvoiceMonth = Carbon::parse($invoices->first()->tgl)->month;
+        $firstInvoiceYear = Carbon::parse($invoices->first()->tgl)->year;
+    
+        $months = collect();
+        for ($i = 0; $i < 12; $i++) {
+            $months->push(Carbon::create($firstInvoiceYear, $firstInvoiceMonth)->addMonths($i));
+        }
+
+        $monthlyReport = $months->map(function ($month) use ($invoices) {
+            $monthlyInvoices = $invoices->filter(function ($invoice) use ($month) {
+                return Carbon::parse($invoice->payment_date)->format('Y-m') == $month->format('Y-m');
+            });
+    
+            return [
+                'month' => $month->translatedFormat('F Y'),
+                'invoices' => $monthlyInvoices->isEmpty() ? 
+                [['nomor' => '-', 'tgl' => '-', 'metode' => '-', 'total' => '-']] : 
+                $monthlyInvoices->map(function ($invoice) {
+                    return [
+                        'nomor' => $invoice->nomor,
+                        'tgl' => $invoice->tgl,
+                        'metode' => $invoice->metode,
+                        'total' => $invoice->total,
+                    ];
+                })
+            ];
+        });
+        // dd($monthlyReport);
+        $pdf = PDF::loadView('pdf.spp', [
+            'data' => $monthlyReport,
+            'anak' => $anak,
         ], [ ], [
-            'format' => 'A4-P'
+            'default_font_size'  => '7',
+            'format'          => 'A6',
+            'margin_left'     => 5,
+            'margin_right'    => 5,
+            'margin_top'      => 5,
+            'margin_bottom'   => 5,
         ]);
 
-        return $pdf->stream('Invoice '. $data->nomor .'.pdf');
+        return $pdf->stream('Kartu SPP.pdf');
     }
 
     public function kartu($id)

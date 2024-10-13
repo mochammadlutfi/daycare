@@ -8,6 +8,10 @@
                         <i class="fa fa-plus me-1"></i>
                         Tambah
                     </a>
+                    <el-button type="primary" @click.prevent="exportModal = true">
+                        <i class="fa fa-print me-1"></i>
+                        Export
+                    </el-button>
                 </div>
             </div>
             
@@ -82,16 +86,38 @@
                 </div>
             </div>
         </div>
+        <el-dialog v-model="exportModal" title="Export" width="500">
+            <el-form label-width="30%" @submit.prevent="getReport" target="_blank" label-position="top">
+                <el-form-item class="mb-4" label="Kelompok">
+                    <select-kelompok name="kelompok" v-model="form.kelompok"/>
+                </el-form-item>
+                <el-form-item class="mb-4" label="Paket">
+                    <select-paket name="paket" v-model="form.paket"/>
+                </el-form-item>
+
+                <div class="d-flex">
+                    <div class="float-end">
+                        <el-button @click="exportModal = false">Batal</el-button>
+                        <el-button type="primary" native-type="submit">
+                            Download
+                        </el-button>
+                    </div>
+                </div>
+            </el-form>
+        </el-dialog>
     </base-layout>
 </template>
 
 <script>
+import SelectKelompok from '@/Components/SelectKelompok.vue';
+import SelectPaket from '@/Components/SelectPaket.vue';
 import axios from 'axios';
 import moment from 'moment';
 import { router } from '@inertiajs/vue3';
 export default {
     components: {
-
+        SelectKelompok,
+        SelectPaket
     },
     data(){
         return {
@@ -109,6 +135,11 @@ export default {
                 page : 1,
                 limit : 25,
                 q : ""
+            },
+            exportModal : false,
+            form : {
+                kelompok : null,
+                paket : null,
             }
         } 
     },
@@ -148,9 +179,6 @@ export default {
                 console.error(error);
             }
         },
-        onClickRow(row, column, event){
-            router.visit(this.route('admin.pegawai.show', {id : row.id}), { method: 'get' })
-        },
         selectAll(e){
             if(e.target.checked){
                 this.dataList.data.forEach((v, i) => {
@@ -165,6 +193,9 @@ export default {
                 return moment(String(value)).format('DD MMM YYYY')
             }
         },
+        getReport(){
+            window.open(this.route('admin.invoice.report', this.form), '_blank');
+        }
     }
 }
 </script>

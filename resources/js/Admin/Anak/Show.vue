@@ -15,8 +15,9 @@
                         </el-button>
                     </template>
                     <!-- <l -->
-                     <Link class="ep-button ep-button--primary" :href="route('admin.anak.spp', {id : data.id})">
-                    </Link>
+                    <a class="ep-button ep-button--primary" target="_blank" :href="route('admin.anak.spp', {id : data.id})">
+                        Kartu SPP
+                    </a>
                 </div>
             </div>
             <div class="">
@@ -334,6 +335,7 @@ export default {
     },
     data(){
         return {
+            isLoading : false,
             showModal : false,
             modalTitle : 'Terima Pendaftaran',
             activeTab : 'anak',

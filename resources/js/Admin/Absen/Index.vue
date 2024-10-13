@@ -12,6 +12,10 @@
                         <i class="fa fa-plus me-1"></i>
                         Scanner
                     </a>
+                    <el-button type="primary" @click.prevent="exportModal = true">
+                        <i class="fa fa-print me-1"></i>
+                        Export
+                    </el-button>
                 </div>
             </div>
             
@@ -76,6 +80,31 @@
                         </el-row>
                     </div>
             </div>
+            <el-dialog v-model="exportModal" title="Export" width="500">
+                <el-form label-width="30%" @submit.prevent="getReport" target="_blank" label-position="top">
+                    <el-form-item class="mb-4" label="Kelompok">
+                        <select-kelompok name="kelompok" v-model="form.kelompok"/>
+                    </el-form-item>
+                    <el-form-item class="mb-4" :label="(form.tipe == 'bulanan') ? 'Bulan' :  'Tahun'">
+                        <el-date-picker
+                        v-model="form.tgl"
+                        format="MMMM YYYY"
+                        value-format="YYYY-MM-DD"
+                        type="month"
+                        placeholder="Pilih Bulan"
+                        />
+                    </el-form-item>
+
+                    <div class="d-flex">
+                        <div class="float-end">
+                            <el-button @click="exportModal = false">Batal</el-button>
+                            <el-button type="primary" native-type="submit">
+                                Download
+                            </el-button>
+                        </div>
+                    </div>
+                </el-form>
+            </el-dialog>
         </div>
     </base-layout>
 </template>
@@ -84,9 +113,10 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { router } from '@inertiajs/vue3';
+import SelectKelompok from '@/Components/SelectKelompok.vue';
 export default {
     components: {
-
+        SelectKelompok
     },
     data(){
         return {
@@ -104,6 +134,11 @@ export default {
                 page : 1,
                 limit : 25,
                 q : ""
+            },
+            exportModal : false,
+            form : {
+                kelompok : null,
+                tgl : null,
             }
         } 
     },
@@ -160,6 +195,9 @@ export default {
                 return dayjs(String(value)).format('DD MMMM YYYY')
             }
         },
+        getReport(){
+            window.open(this.route('admin.absen.report', this.form), '_blank');
+        }
     }
 }
 </script>

@@ -227,7 +227,7 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/create', 'InvoiceController@create')->name('create');
             Route::post('/store','InvoiceController@store')->name('store');
             Route::get('/data', 'InvoiceController@data')->name('data');
-            Route::get('/slug', 'InvoiceController@check_slug')->name('slug');
+            Route::get('/report', 'InvoiceController@report')->name('report');
             Route::get('/{id}', 'InvoiceController@show')->name('show');
             Route::get('/{id}/edit','InvoiceController@edit')->name('edit');
             Route::post('/{id}/update','InvoiceController@update')->name('update');
@@ -317,7 +317,7 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::post('/scan','AbsenController@scan')->name('scan');
             Route::get('/data', 'AbsenController@data')->name('data');
             Route::get('/anak', 'AbsenController@anak')->name('anak');
-            Route::get('/slug', 'AbsenController@check_slug')->name('slug');
+            Route::get('/report', 'AbsenController@report')->name('report');
             Route::get('/{id}', 'AbsenController@show')->name('show');
             Route::get('/{id}/edit','AbsenController@edit')->name('edit');
             Route::post('/{id}/update','AbsenController@update')->name('update');
