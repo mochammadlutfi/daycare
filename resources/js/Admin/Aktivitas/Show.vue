@@ -46,6 +46,12 @@
                             </el-row>
                         </el-col>
                     </el-row>
+                    <el-row class="mb-2" :gutter="10">
+                        <el-col :lg="8">Keterangan</el-col>
+                        <el-col :lg="16">
+                            <div class="fw-semibold">{{ data.keterangan }}</div>
+                        </el-col>
+                    </el-row>
                     
                     <div class="demo-image__preview">
                         <div class="">Foto Kegiatan</div>

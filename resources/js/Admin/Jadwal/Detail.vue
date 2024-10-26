@@ -11,10 +11,10 @@
                 </div>
             </div>
             <div class="block block-rounded" v-loading="isLoading">
-                <div class="block-content" v-for="(h, i) in hari" :key="i">
-                    <div class="fs-4 fw-bold">{{ h }}</div>
-                    <el-table :data="data[h]" style="width: 100%" border>
+                <div class="block-content p-4">
+                    <el-table :data="data" style="width: 100%" border :span-method="spanData">
                         <el-table-column type="index" width="50" />
+                        <el-table-column prop="hari" label="Hari"/>
                         <el-table-column prop="jenis.nama" label="Jenis Kegiatan" width="160"/>
                         <el-table-column prop="kegiatan.nama" label="Kegiatan"/>
                         <el-table-column prop="kegiatan.tipe" label="Tipe"/>
@@ -134,6 +134,30 @@ export default {
         await this.fetchData();
     },
     methods :{
+        spanData(e) {
+            if (e.columnIndex === 1) {
+                if (e.rowIndex === 0 || this.data[e.rowIndex].hari !== this.data[e.rowIndex - 1].hari) {
+                    let rowVal = 1;
+                    for (let i = e.rowIndex + 1; i < this.data.length; i++) {
+                        if (this.data[i].hari === e.row.hari) {
+                            rowVal++;
+                        } else {
+                            break;
+                        }
+                    }
+                    return {
+                        rowspan : rowVal,
+                        colspan: 1
+                    };
+                } else {
+                    return {
+                        rowspan: 0,
+                        colspan: 0
+                    };
+                }
+            }
+
+        },
         makeRange(start, end){
             var result = [];
             for (let i = start; i <= end; i++) {

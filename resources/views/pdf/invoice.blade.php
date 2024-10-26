@@ -4,10 +4,15 @@
     <title>Invoice {{ $data->nomor }}</title>
 
     <link rel="stylesheet" href="/css/bootstrap.css">
+    <style>
+        .table.table-transparent td,
+        .table.table-transparent th {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container">
+    <div class="container" style="background: url({{ $data->status == 'paid' ? '/images/paid.png' : '/images/unpaid.png' }}) no-repeat center center`">
         <table width="100%">
             <tr>
                 <td width="20%" class="text-center">
@@ -67,7 +72,6 @@
                     <p style="font-size:10pt">
                         {{$data->user->detail->alamat_ayah}}
                         <br/>
-                        Telp : {{$data->user->detail->hp_ayah}}<br/>
                         Email : {{$data->user->email}}
                     </p>
                 </td>
@@ -75,7 +79,7 @@
         </table>
         <br/>
         <br/>
-        <table class="table v-align-center table-bordered datatable w-100">
+        <table class="table v-align-center table-transparent table-bordered w-100">
             <thead>
                 <tr>
                     <th width="5%">#</th>

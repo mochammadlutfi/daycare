@@ -158,7 +158,7 @@
             }
         },
         mounted(){
-            if(route().current('register.detail')){
+            if(route().current('register.detail') || route().current('verification.notice')){
                 this.sidebar = false;
             }
             // this.sidebarMobile = false;

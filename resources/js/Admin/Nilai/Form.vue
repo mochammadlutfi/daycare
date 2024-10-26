@@ -38,7 +38,7 @@
                                     {{ scope.row.anak_nama }}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="Nilai">
+                            <el-table-column label="Nilai" width="250px">
                                 <template #default="scope">
                                     <el-select v-model="scope.row.nilai" placeholder="Pilih" class="w-100">
                                         <el-option label="Belum Berkembang" value="BB"/>
@@ -46,6 +46,11 @@
                                         <el-option label="Berkembang Sesuai Harapan" value="BSH"/>
                                         <el-option label="Berkembang Sangat Baik" value="BSB"/>
                                     </el-select>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Keterangan">
+                                <template #default="scope">
+                                    <el-input v-model="scope.row.keterangan"/>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -64,6 +69,7 @@
 import SelectKelompok from '@/Components/SelectKelompok.vue';
 import SelectJenisKegiatan from '@/Components/SelectJenisKegiatan.vue';
 import SelectKegiatan from '@/Components/SelectKegiatan.vue';
+import dayjs from 'dayjs';
 export default {
     components :{
         SelectKelompok,
@@ -87,7 +93,7 @@ export default {
             title : "Tambah Penilaian Baru",
             disableKota : false,
             form : {
-                tgl: null,
+                tgl: new dayjs(),
                 kelompok_id : null,
                 jenis_id : null,
                 kegiatan_id : null,
@@ -103,27 +109,7 @@ export default {
     },
     methods : {
         setValue(){
-            this.form.nik = this.value.nik;
-            this.form.nama = this.value.nama;
-            this.form.jk = (this.value.jk == "P") ? "Perempuan" : "Laki-Laki";
-            this.form.tmpLahir = this.value.tmp_lahir;
-            this.form.tglLahir = this.value.tgl_lahir;
-            this.form.alamat = this.value.alamat;
-            this.form.rt = this.value.rt;
-            this.form.rw = this.value.rw;
-            this.form.tps = this.value.tps;
-            this.form.kota_id = this.value.kota_id;
-            this.form.kecamatan_id = this.value.kecamatan_id;
-            this.form.kelurahan_id = this.value.kelurahan_id;
-            this.form.phone = this.value.phone;
-            this.form.email = this.value.email;
 
-            this.form.ktp = this.value.ktp;
-            this.form.image = this.value.image;
-
-            this.form.tps = this.value.tps;
-            this.form.user_id = this.value.user_id
-            // if(level)
         },  
         async fetchAnak(){
             try {
@@ -142,6 +128,7 @@ export default {
                             user_id : d.user_id,
                             anak_nama : d.nama,
                             nilai : null,
+                            keterangan : null,
                         });
                     });
                 }

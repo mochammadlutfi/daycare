@@ -92,7 +92,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Indikator" :error="errors.indikator">
-                    <el-input v-model="form.indikator" autocomplete="off" />
+                    <el-select v-model="form.indikator" placeholder="Pilih" class="w-100" v-if="form.tipe == 'Perkembangan'">
+                        <el-option label="Perkembangan Nilai Agama dan Moral" value="Perkembangan Nilai Agama dan Moral"/>
+                        <el-option label="Perkembangan Sosial dan Emosional" value="Perkembangan Sosial dan Emosional"/>
+                        <el-option label="Perkembangan Fisik dan Motorik" value="Perkembangan Fisik dan Motorik"/>
+                        <el-option label="Perkembangan Kognitif" value="Perkembangan Kognitif"/>
+                        <el-option label="Perkembangan Bahasa" value="Perkembangan Bahasa"/>
+                    </el-select>
+                    <el-input v-model="form.indikator" autocomplete="off"  v-else/>
                 </el-form-item>
             </el-form>
 

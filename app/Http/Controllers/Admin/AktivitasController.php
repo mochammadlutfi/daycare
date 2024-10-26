@@ -72,6 +72,7 @@ class AktivitasController extends Controller
                 $data->kelompok_id = $request->kelompok_id;
                 $data->jenis_id = $request->jenis_id;
                 $data->kegiatan_id = $request->kegiatan_id;
+                $data->keterangan = $request->keterangan;
                 $data->save();
 
                 if(count($request->images)){

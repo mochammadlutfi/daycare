@@ -224,20 +224,20 @@ class JadwalController extends Controller
 
     public function detailData($id, Request $request)
     {
-        $hariArray = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        // $hariArray = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
 
         $data = [];
         $jadwal = JadwalDetail::with(['jenis', 'kegiatan'])
-        ->where('jadwal_id', $id)->orderBy('jam_mulai', "ASC")->get();
+        ->where('jadwal_id', $id)->orderBy('hari', 'DESC')->orderBy('jam_mulai', "ASC")->get();
 
-        foreach ($hariArray as $hari) {
-            $data[$hari] = $jadwal->filter(function($item) use ($hari) {
-                return $item->hari === $hari;
-            })->values()->toArray();
-        }
+        // foreach ($hariArray as $hari) {
+        //     $data[$hari] = $jadwal->filter(function($item) use ($hari) {
+        //         return $item->hari === $hari;
+        //     })->values()->toArray();
+        // }
 
 
-        return response()->json($data);
+        return response()->json($jadwal);
     }
 
 }

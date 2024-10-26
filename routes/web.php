@@ -51,9 +51,12 @@ Route::namespace('Frontend')->group(function(){
             ->middleware(['throttle:6,1'])
             ->name('verification.send');
 
-            Route::get('/pendaftaran/detail','RegisterController@detail')->name('register.detail');
-            Route::post('/pendaftaran/detail','RegisterController@detailStore');
-            Route::post('/pendaftaran/anak','RegisterController@anakStore')->name('register.anak');
+            Route::middleware(['verified'])
+            ->group(function () {
+                Route::get('/pendaftaran/detail','RegisterController@detail')->name('register.detail');
+                Route::post('/pendaftaran/detail','RegisterController@detailStore');
+                Route::post('/pendaftaran/anak','RegisterController@anakStore')->name('register.anak');
+            });
         });
 
         Route::prefix('/user')->name('user.')
@@ -330,7 +333,8 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/create', 'NilaiController@create')->name('create');
             Route::post('/store','NilaiController@store')->name('store');
             Route::get('/data', 'NilaiController@data')->name('data');
-            Route::get('/slug', 'NilaiController@check_slug')->name('slug');
+            Route::get('/detail', 'NilaiController@detail')->name('detail');
+            Route::get('/chart', 'NilaiController@chart')->name('chart');
             Route::get('/{id}', 'NilaiController@show')->name('show');
             Route::get('/{id}/edit','NilaiController@edit')->name('edit');
             Route::post('/{id}/update','NilaiController@update')->name('update');

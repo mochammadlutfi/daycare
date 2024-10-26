@@ -11,4 +11,9 @@ class GeneralHelp
     public static function currency($value){
         return number_format($value,0,',','.');
     }
+
+    public static function squence_invoice()
+    {
+        
+    }
 }

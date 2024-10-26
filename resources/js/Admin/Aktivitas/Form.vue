@@ -31,9 +31,9 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <!-- <el-form-item label="Keterangan">
-                            <el-input-field
-                        </el-form-item> -->
+                        <el-form-item label="Keterangan">
+                            <el-input v-model="form.keterangan" type="textarea" :rows="4"/>
+                        </el-form-item>
 
                         <el-form-item class="mb-4" label="Foto Dokumentasi" label-width="180px">
                             <el-upload action="#" v-model:file-list="images" 

@@ -92,7 +92,7 @@ class RegisterController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('register.detail');
+            return redirect()->route('verification.notice');
         }
     }
 
@@ -125,142 +125,171 @@ class RegisterController extends Controller
 
     public function detailStore(Request $request)
     {
-        $rules = [
-            'nama_ayah' => 'required',
-            'tmp_lahir_ayah' => 'required',
-            'tgl_lahir_ayah' => 'required',
-            'telp_ayah' => 'required',
-            'alamat_ayah' => 'required',
-            'pekerjaan_ayah' => 'required',
-            'penghasilan_ayah' => 'required',
-            'alamat_kantor_ayah' => 'required',
-            'agama_ayah' => 'required',
-            'pendidikan_ayah' => 'required',
-            'nama_ibu' => 'required',
-            'tmp_lahir_ibu' => 'required',
-            'tgl_lahir_ibu' => 'required',
-            'telp_ibu' => 'required',
-            'alamat_ibu' => 'required',
-            'pekerjaan_ibu' => 'required',
-            'penghasilan_ibu' => 'required',
-            'alamat_kantor_ibu' => 'required',
-            'agama_ibu' => 'required',
-            'pendidikan_ibu' => 'required',
-            'ktp_ayah' => 'required',
-            'ktp_ibu' => 'required',
-            'kk' => 'required',
-        ];
+        DB::beginTransaction();
+        try{
 
-        $pesan = [
-            'nama_ayah.required' => 'Nama ayah tidak boleh kosong',
-            'tmp_lahir_ayah.required' => 'Tempat lahir ayah tidak boleh kosong',
-            'tgl_lahir_ayah.required' => 'Tanggal lahir ayah tidak boleh kosong',
-            'telp_ayah.required' => 'Telepon ayah tidak boleh kosong',
-            'alamat_ayah.required' => 'Alamat ayah tidak boleh kosong',
-            'pekerjaan_ayah.required' => 'Pekerjaan ayah tidak boleh kosong',
-            'penghasilan_ayah.required' => 'Penghasilan ayah tidak boleh kosong',
-            'alamat_kantor_ayah.required' => 'Alamat kantor ayah tidak boleh kosong',
-            'agama_ayah.required' => 'Agama ayah tidak boleh kosong',
-            'pendidikan_ayah.required' => 'Pendidikan ayah tidak boleh kosong',
-            'nama_ibu.required' => 'Nama ibu tidak boleh kosong',
-            'tmp_lahir_ibu.required' => 'Tempat lahir ibu tidak boleh kosong',
-            'tgl_lahir_ibu.required' => 'Tanggal lahir ibu tidak boleh kosong',
-            'telp_ibu.required' => 'Telepon ibu tidak boleh kosong',
-            'alamat_ibu.required' => 'Alamat ibu tidak boleh kosong',
-            'pekerjaan_ibu.required' => 'Pekerjaan ibu tidak boleh kosong',
-            'penghasilan_ibu.required' => 'Penghasilan ibu tidak boleh kosong',
-            'alamat_kantor_ibu.required' => 'Alamat kantor ibu tidak boleh kosong',
-            'agama_ibu.required' => 'Agama ibu tidak boleh kosong',
-            'pendidikan_ibu.required' => 'Pendidikan ibu tidak boleh kosong',
-            'ktp_ayah.required' => 'Scan KTP Ayah tidak boleh kosong',
-            'ktp_ibu.required' => 'Scan KTP Ibu tidak boleh kosong',
-            'kk.required' => 'Scan KK tidak boleh kosong',
-        ];        
+            $user = auth()->guard('web')->user();
 
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            if($request->axios){
-                return response()->json([
-                    'errors' => $validator->errors(),
-                    'fail' => true,
-                ], 200);
+            $ktpAyahDir = null;
+            $ktpIbuDir = null;
+            $kkDir = null;
+            $akteDir = null;
+
+            if (is_file($request->ktp_ayah)) {
+                $ktpAyahDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ayah')->getClientOriginalExtension();
+                $directory = Storage::disk('public')->put($ktpAyahDir, fopen($request->file('ktp_ayah'), 'r+'));
             }
-            return back()->withErrors($validator->errors());
+
+            if (is_file($request->ktp_ibu)) {
+                $ktpIbuDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ibu')->getClientOriginalExtension();
+                $directory = Storage::disk('public')->put($ktpIbuDir, fopen($request->file('ktp_ibu'), 'r+'));
+            }
+
+            if (is_file($request->kk)) {
+                $kkDir = 'scan/' . Str::random(32) . '.' . $request->file('kk')->getClientOriginalExtension();
+                $directory = Storage::disk('public')->put($kkDir, fopen($request->file('kk'), 'r+'));
+            }
+
+            if (is_file($request->scan_akte_anak)) {
+                $akteDir = 'scan/' . Str::random(32) . '.' . $request->file('scan_akte_anak')->getClientOriginalExtension();
+                $directory = Storage::disk('public')->put($akteDir, fopen($request->file('scan_akte_anak'), 'r+'));
+            }
+
+            $orang_tua = UserDetail::updateOrCreate(["user_id" => $user->id], [
+                "user_id" => $user->id,
+                "nama_ayah" => $request->nama_ayah,
+                "tmp_lahir_ayah" => $request->tmp_lahir_ayah,
+                "tgl_lahir_ayah" => $request->tgl_lahir_ayah,
+                "telp_ayah" => $request->telp_ayah,
+                "alamat_ayah" => $request->alamat_ayah,
+                "pekerjaan_ayah" => $request->pekerjaan_ayah,
+                "penghasilan_ayah" => $request->penghasilan_ayah,
+                "alamat_kantor_ayah" => $request->alamat_kantor_ayah,
+                "pendidikan_ayah" => $request->pendidikan_ayah,
+                "agama_ayah" => $request->agama_ayah,
+
+                "nama_ibu" => $request->nama_ibu,
+                "tmp_lahir_ibu" => $request->tmp_lahir_ibu,
+                "tgl_lahir_ibu" => $request->tgl_lahir_ibu,
+                "telp_ibu" => $request->telp_ibu,
+                "alamat_ibu" => $request->alamat_ibu,
+                "pekerjaan_ibu" => $request->pekerjaan_ibu,
+                "penghasilan_ibu" => $request->penghasilan_ibu,
+                "alamat_kantor_ibu" => $request->alamat_kantor_ibu,
+                "pendidikan_ibu" => $request->pendidikan_ibu,
+                "agama_ibu" => $request->agama_ibu,
+
+                "scan_ktp_ayah" => $ktpAyahDir ?? $request->ktp_ayah,
+                "scan_ktp_ibu" => $ktpIbuDir ?? $request->ktp_ibu,
+                "scan_kk" => $kkDir ?? $request->kk,
+            ]);
+
+            $anak = new Anak();
+            $anak->user_id = $user->id;
+            $anak->nama = $request->nama_anak;
+            $anak->username = $request->username;
+            $anak->jk = $request->jk_anak;
+            $anak->anak_ke = $request->anak_ke;
+            $anak->tmp_lahir = $request->tmp_lahir_anak;
+            $anak->tgl_lahir = $request->tgl_lahir_anak;
+            $anak->alamat = $request->alamat_anak;
+            $anak->jarak = $request->jarak;
+            $anak->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan;
+            $anak->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita;
+            $anak->makanan_yang_disukai = $request->makanan_yang_disukai;
+            $anak->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai;
+            $anak->alergi = $request->memiliki_alergi;
+            $anak->isAntarJemput = $request->isLaundry ? 1 : 0;
+            $anak->isLaundry = $request->isAntarJemput ? 1 : 0;
+            $anak->scan_akte = $akteDir ?? $request->scan_akte_anak;
+            $anak->paket_id = $request->paket_id;
+            $anak->status = 'Pending';
+            $anak->save();
+
+            $paket = Paket::where('id', $request->paket_id)->first();
+                
+            $invoice = new Invoice();
+            $invoice->nomor = $this->getNomor();
+            $invoice->tgl = Carbon::now();
+            $invoice->user_id = $user->id;
+            $invoice->anak_id = $anak->id;
+            $invoice->uid = uniqid();
+            $invoice->metode = 'Transfer';
+            $invoice->status = 'paid';
+            $invoice->tgl_tempo = Carbon::now()->addDays(7);
+            $invoice->total = $paket->pembangunan + $paket->pendaftaran + $paket->spp;
+            $invoice->save();
+
+
+            $linesData = collect([
+                [
+                    'tipe' => 'Pembangunan',
+                    'harga' => settings()->get('pembangunan')
+                ],
+                [
+                    'tipe' => 'Pendaftaran',
+                    'harga' => settings()->get('pendaftaran')
+                ],
+                [
+                    'tipe' => 'SPP',
+                    'harga' => settings()->get('spp')
+                ]
+            ]);
+
+            foreach($linesData as $i){
+                $line = new InvoiceDetail();
+                $line->tipe = $i['tipe'];
+                $line->harga = $i['harga'];
+                $line->qty = 1;
+                $invoice->detail()->save($line);
+
+                $lines[] = [
+                    'id' => $line->id,
+                    'price' => $line->harga,
+                    'quantity' => $line->qty,
+                    'name' => $line->tipe,
+                ];
+            }
             
-        }else{
-            DB::beginTransaction();
-            try{
+            $payload = [
+                'transaction_details' => [
+                    'order_id'     => $invoice->uid,
+                    'gross_amount' => $request->total,
+                ],
+                'customer_details' => [
+                    'first_name' => $user->nama,
+                    'email'      => $user->email,
+                ],
+                'item_details' => $lines,
+            ];
 
-                $user = auth()->guard('web')->user();
+            $snapToken = \Midtrans\Snap::getSnapToken($payload);
+            $invoice->ref = $snapToken;
+            $invoice->save();
 
-                $ktpAyahDir = null;
-                $ktpIbuDir = null;
-                $kkDir = null;
-                $akteAnakDir = null;
+            $pdfData = Invoice::with(['user','detail'])->where('id', $invoice->id)
+            ->first();
     
-                if (is_file($request->ktp_ayah)) {
-                    $ktpAyahDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ayah')->getClientOriginalExtension();
-                    $directory = Storage::disk('public')->put($ktpAyahDir, fopen($request->file('ktp_ayah'), 'r+'));
-                }
+            $invoiceFile = PDF::loadView('pdf.invoice', [
+                'data' => $pdfData,
+            ], [ ], [
+                'format' => 'A4-P'
+            ]);
     
-                if (is_file($request->ktp_ibu)) {
-                    $ktpIbuDir = 'scan/' . Str::random(32) . '.' . $request->file('ktp_ibu')->getClientOriginalExtension();
-                    $directory = Storage::disk('public')->put($ktpIbuDir, fopen($request->file('ktp_ibu'), 'r+'));
-                }
-    
-                if (is_file($request->kk)) {
-                    $kkDir = 'scan/' . Str::random(32) . '.' . $request->file('kk')->getClientOriginalExtension();
-                    $directory = Storage::disk('public')->put($kkDir, fopen($request->file('kk'), 'r+'));
-                }
+            Notification::route('mail', $user->email)
+            ->notify(new RegisterNotification($invoiceFile->output(), $pdfData));
 
-                $orang_tua = UserDetail::updateOrCreate(["user_id" => $user->id], [
-                    "user_id" => $user->id,
-                    "nama_ayah" => $request->nama_ayah,
-                    "tmp_lahir_ayah" => $request->tmp_lahir_ayah,
-                    "tgl_lahir_ayah" => $request->tgl_lahir_ayah,
-                    "telp_ayah" => $request->telp_ayah,
-                    "alamat_ayah" => $request->alamat_ayah,
-                    "pekerjaan_ayah" => $request->pekerjaan_ayah,
-                    "penghasilan_ayah" => $request->penghasilan_ayah,
-                    "alamat_kantor_ayah" => $request->alamat_kantor_ayah,
-                    "pendidikan_ayah" => $request->pendidikan_ayah,
-                    "agama_ayah" => $request->agama_ayah,
-    
-                    "nama_ibu" => $request->nama_ibu,
-                    "tmp_lahir_ibu" => $request->tmp_lahir_ibu,
-                    "tgl_lahir_ibu" => $request->tgl_lahir_ibu,
-                    "telp_ibu" => $request->telp_ibu,
-                    "alamat_ibu" => $request->alamat_ibu,
-                    "pekerjaan_ibu" => $request->pekerjaan_ibu,
-                    "penghasilan_ibu" => $request->penghasilan_ibu,
-                    "alamat_kantor_ibu" => $request->alamat_kantor_ibu,
-                    "pendidikan_ibu" => $request->pendidikan_ibu,
-                    "agama_ibu" => $request->agama_ibu,
-    
-                    "scan_ktp_ayah" => $ktpAyahDir ?? $request->ktp_ayah,
-                    "scan_ktp_ibu" => $ktpIbuDir ?? $request->ktp_ibu,
-                    "scan_kk" => $kkDir ?? $request->kk,
-                ]);
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return back();
-            }
-            DB::commit();
-            if($request->axios){
-                return response()->json([
-                    'data' => $data,
-                    'fail' => false,
-                ], 200);
-            }
-            return redirect()->route('register.detail', ['step' => 2]);
+        }catch(\QueryException $e){
+            DB::rollback();
+            return back();
         }
+        DB::commit();
+        return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/'. $snapToken);
     }
 
     
     public function anakStore(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'nama' => 'required',
             'tmp_lahir' => 'required',
@@ -397,7 +426,6 @@ class RegisterController extends Controller
             return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/'. $snapToken);
         }
     }
-
     
     private function getNomor()
     {

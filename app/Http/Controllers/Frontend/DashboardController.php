@@ -36,9 +36,9 @@ class DashboardController extends Controller
             ],
             [
                 'to' => route('user.raport.index'),
-                'icon' => '<i class="fa fa-wallet fa-2x"></i>',
+                'icon' => '<i class="fa fa-check-square fa-2x"></i>',
                 'name' => 'Penilaian',
-                'value' => DB::table('invoice')->where('user_id', $user->id)->where('status', 'unpaid')->get()->count(),
+                'value' => DB::table('nilai_detail')->where('user_id', $user->id)->get()->count(),
             ],
         ]);
 
