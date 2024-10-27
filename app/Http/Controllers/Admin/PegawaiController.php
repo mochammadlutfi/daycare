@@ -123,7 +123,6 @@ class PegawaiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $validator = $this->validate($request->all(), true, $id);
         if ($validator->fails()){
             dd($validator->errors());
@@ -140,8 +139,8 @@ class PegawaiController extends Controller
                 $data->alamat = $request->alamat;
                 $data->agama = $request->agama;
                 $data->pendidikan_terakhir = $request->pendidikan_terakhir;
-                $data->tgl_masuk = Carbon::parse($request->tglMasuk)->format('Y-m-d');
-                $data->tgl_mulai = $request->tgl_mulai;
+                $data->tgl_mulai = Carbon::parse($request->tgl_mulai)->format('Y-m-d');
+                $data->tgl_masuk = $request->tglMasuk;
                 $data->sk = $request->sk;
                 $data->email = $request->email;
                 $data->phone = $request->phone;
@@ -167,7 +166,7 @@ class PegawaiController extends Controller
         DB::beginTransaction();
         try{
             
-            $pdk = Pendukung::find($id);
+            $pdk = Admin::find($id);
             $pdk->delete();
 
         }catch(\QueryException $e){

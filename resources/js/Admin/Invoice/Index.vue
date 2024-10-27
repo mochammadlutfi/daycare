@@ -4,10 +4,6 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Invoice</span>
                 <div class="space-x-1">
-                    <a :href="route('admin.pegawai.create')" class="ep-button ep-button--primary">
-                        <i class="fa fa-plus me-1"></i>
-                        Tambah
-                    </a>
                     <el-button type="primary" @click.prevent="exportModal = true">
                         <i class="fa fa-print me-1"></i>
                         Export

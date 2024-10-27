@@ -319,7 +319,6 @@ class PendaftaranController extends Controller
 
     public function data(Request $request)
     {
-        // dd('wqewq');
         $keyword = $request->q;
         $kota_id = $request->kota;
         $kec_id = $request->kec;
@@ -331,10 +330,7 @@ class PendaftaranController extends Controller
 
         $data = Anak::with(['user' => function($q){
             return $q->with('detail');
-        }, 'kelompok', 'invoice' => function($q){
-            return $q->latest()->first();
-        }
-        ])
+        }, 'kelompok', 'invoice'])
         ->whereHas('invoice')
         ->whereNull('kelompok_id')
         ->where('status','!=' ,'Aktif')
@@ -390,50 +386,5 @@ class PendaftaranController extends Controller
         }else{
             return $code . date('ymd') .'/'. sprintf("%05s", $no);
         }
-    }
-
-    private function validate($data, $editMode = false){
-        
-        $rules = [
-            'nama' => 'required',
-            'ktp' => 'required',
-            'jk' => 'required',
-            'tmpLahir' => 'required',
-            'tglLahir' => 'required',
-            'alamat' => 'required',
-            'rt' => 'required',
-            'rw' => 'required',
-            'kota_id' => 'required',
-            'kecamatan_id' => 'required',
-            'kelurahan_id' => 'required',
-        ];
-
-        $pesan = [
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'ktp.required' => 'KTP Wajib Diisi!',
-            'jk.required' => 'Jenis Kelamin Wajib Diisi!',
-            'tmpLahir.required' => 'Tempat Lahir Wajib Diisi!',
-            'tglLahir.required' => 'Tanggal Lahir Wajib Diisi!',
-            'alamat.required' => 'Alamat Lengkap Wajib Diisi!',
-            'rt.required' => 'RT Wajib Diisi!',
-            'rw.required' => 'RW Wajib Diisi!',
-            'kota_id.required' => 'Kota Wajib Diisi!',
-            'kecamatan_id.required' => 'Kecamatan Wajib Diisi!',
-            'kelurahan_id.required' => 'Desa/Kelurahan Wajib Diisi!',
-            'email.required' => 'Alamat Email Wajib Diisi!',
-            'email.unique' => 'Alamat Email Sudah Digunakan!',
-        ];
-        
-
-        if(!$editMode){
-            $rules['username'] = 'required|unique:saksi,username';
-            $rules['password'] = 'required';
-
-            $pesan['username.required'] = 'Username Wajib Diisi!';
-            $pesan['username.unique'] = 'Username Sudah Digunakan!';
-            $pesan['password.required'] = 'Password Wajib Diisi!';
-        }
-
-        return Validator::make($data, $rules, $pesan);
     }
 }

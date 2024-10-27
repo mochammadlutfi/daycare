@@ -113,7 +113,44 @@ class PaketController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // dd($request->all());
+        $rules = [
+            'nama' => 'required',
+            'usia' => 'required',
+            'pembangunan' => 'required',
+            'pendaftaran' => 'required',
+            'spp' => 'required',
+        ];
+
+        $pesan = [
+            'nama.required' => 'Nama Paket Wajib Diisi!',
+            'usia.required' => 'Usia Wajib Diisi!',
+            'pembangunan.required' => 'Biaya Pembangunan Wajib Diisi!',
+            'pendaftaran.required' => 'Biaya Pendaftaran Wajib Diisi!',
+            'spp.required' => 'Biaya SPP Bulanan Wajib Diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return back()->withErrors($validator->errors());
+        }else{
+            DB::beginTransaction();
+            try{
+                $data = Paket::where('id', $id)->first();
+                $data->nama = $request->nama;
+                $data->usia = $request->usia;
+                $data->pembangunan = $request->pembangunan;
+                $data->pendaftaran = $request->pendaftaran;
+                $data->spp = $request->spp;
+                $data->save();
+
+            }catch(\QueryException $e){
+                DB::rollback();
+                return back();
+            }
+            DB::commit();
+            return redirect()->route('admin.paket.index');
+        }
     }
 
     /**
@@ -124,7 +161,16 @@ class PaketController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try{
+            $hapus_db = Paket::destroy($id);
+        }catch(\QueryException $e){
+            DB::rollback();
+            return back();
+        }
+
+        DB::commit();
+        return redirect()->route('admin.paket.index');
     }
 
     public function data(Request $request)

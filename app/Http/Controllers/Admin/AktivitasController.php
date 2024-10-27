@@ -47,7 +47,6 @@ class AktivitasController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'kelompok_id' => 'required',
             'tgl' => 'required',

@@ -4,7 +4,7 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Aktivitas</span>
                 <div class="space-x-1">
-                    <a :href="route('admin.aktivitas.create')" class="ep-button ep-button--primary">
+                    <a :href="route('admin.aktivitas.edit', {id : data.id})" class="ep-button ep-button--primary">
                         <i class="si si-note me-1"></i>
                         Ubah
                     </a>
