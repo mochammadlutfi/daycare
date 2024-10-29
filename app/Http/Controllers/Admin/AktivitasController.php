@@ -228,23 +228,30 @@ class AktivitasController extends Controller
     {
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
-        $limit = ($request->limit) ? $request->limit : 25;
         $paging = !empty($request->page) ? true : false;
 
         $elq = Aktivitas::with(['kelompok', 'kegiatan', 'jenis', 'admin'])
         ->withCount('foto')
         ->when($request->q, function($query, $search){
-            $query->where('nama', 'LIKE', '%' . $search . '%')
-            ->orWhere('alamat', 'LIKE', '%' . $search . '%')
-            ->orWhere('email', 'LIKE', '%' . $search . '%');
-        })
-        ->when($request->level, function($query, $level){
-            $query->where('level', $level);
+            $query->where('tgl', 'LIKE', '%' . $search . '%')
+                ->orWhereHas('kelompok', function($q) use ($search) {
+                    $q->where('nama', 'LIKE', '%' . $search . '%')
+                    ->orwhere('usia', 'LIKE', '%' . $search . '%');
+                })
+                ->orWhereHas('kegiatan', function($q) use ($search) {
+                    $q->where('nama', 'LIKE', '%' . $search . '%');
+                })
+                ->orWhereHas('jenis', function($q) use ($search) {
+                    $q->where('nama', 'LIKE', '%' . $search . '%');
+                })
+                ->orWhereHas('admin', function($q) use ($search) {
+                    $q->where('nama', 'LIKE', '%' . $search . '%');
+                });
         })
         ->orderBy($sort, $sortDir);
         
-        if($paging){
-            $data = $elq->paginate($request->page);
+        if($request->limit){
+            $data = $elq->paginate($request->limit);
         }else{
             $data = $elq->get();
         }

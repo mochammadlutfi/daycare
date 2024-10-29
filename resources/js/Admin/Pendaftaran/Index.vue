@@ -47,6 +47,16 @@
                                 {{ scope.row.tmp_lahir }} / {{ scope.row.tgl_lahir }}
                             </template>
                         </el-table-column>
+                        <el-table-column label="Status Pendaftaran">
+                            <template #default="scope">
+                                    <span class="badge bg-success" v-if="scope.row.status == 'Pending'">
+                                        Pending
+                                    </span>
+                                    <span class="badge bg-danger" v-else>
+                                        Ditolak
+                                    </span>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="Status Pembayaran">
                             <template #default="scope">
                                     <span class="badge bg-success" v-if="scope.row.invoice[0].status == 'paid'">

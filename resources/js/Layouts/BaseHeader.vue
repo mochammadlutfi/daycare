@@ -33,12 +33,12 @@
                                 <i class="fa fa-fw fa-lock opacity-25"></i>
                             </a>
                         </el-dropdown-item> -->
-                        <el-dropdown-item>
-                            <Link :href="route('admin.logout')" method="post" as="button" type="button" class="btn-logout dropdown-item d-flex align-items-center justify-content-between space-x-1">
-                                <span class="fs-sm fw-500">Keluar</span>
-                                <i class="fa fa-fw fa-sign-out-alt opacity-25"></i>
-                            </Link>
-                        </el-dropdown-item>
+                            <el-dropdown-item>
+                                <Link :href="route('admin.logout')" method="post" as="button" type="button" class="btn-logout dropdown-item d-flex align-items-center justify-content-between space-x-1">
+                                    <span class="fs-sm fw-500">Keluar</span>
+                                    <i class="fa fa-fw fa-sign-out-alt opacity-25"></i>
+                                </Link>
+                            </el-dropdown-item>
                     </el-dropdown-menu>
                     </template>
                 </el-dropdown>

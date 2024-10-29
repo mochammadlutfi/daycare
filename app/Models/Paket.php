@@ -13,4 +13,8 @@ class Paket extends Model
         'id', 'nama', 'usia'
     ];
     
+    public function anak()
+    {
+        return $this->hasMany(Anak::class, 'paket_id');
+    }
 }

@@ -194,11 +194,11 @@ class RegisterController extends Controller
             $anak->tgl_lahir = $request->tgl_lahir_anak;
             $anak->alamat = $request->alamat_anak;
             $anak->jarak = $request->jarak;
-            $anak->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan;
-            $anak->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita;
-            $anak->makanan_yang_disukai = $request->makanan_yang_disukai;
-            $anak->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai;
-            $anak->alergi = $request->memiliki_alergi;
+            $anak->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan_anak;
+            $anak->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita_anak;
+            $anak->makanan_yang_disukai = $request->makanan_yang_disukai_anak;
+            $anak->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai_anak;
+            $anak->alergi = $request->memiliki_alergi_anak;
             $anak->isAntarJemput = $request->isLaundry ? 1 : 0;
             $anak->isLaundry = $request->isAntarJemput ? 1 : 0;
             $anak->scan_akte = $akteDir ?? $request->scan_akte_anak;
@@ -287,144 +287,62 @@ class RegisterController extends Controller
         return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/'. $snapToken);
     }
 
-    
-    public function anakStore(Request $request)
+    public function revisi($id)
     {
-        $rules = [
-            'nama' => 'required',
-            'tmp_lahir' => 'required',
-            'tgl_lahir' => 'required',
-            'alamat' => 'required',
-            'anak_ke' => 'required',
-            'jarak' => 'required',
-            'sosialisasi_dengan_lingkungan_anak' => 'required',
-        ];
 
-        $pesan = [
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'tmp_lahir.required' => 'Tempat Lahir Wajib Diisi!',
-            'tgl_lahir.required' => 'Tanggal Lahir Wajib Diisi!',
-            'alamat.required' => 'Alamat Wajib Diisi!',
-            'anak_ke.required' => 'Anak Ke Wajib Diisi!',
-            'jarak.required' => 'Jarak Wajib Diisi!',
-            'sosialisasi_dengan_lingkungan_anak.required' => 'Sosialisasi dengan lingkungan Wajib Diisi!',
-        ];
+        $user = auth()->guard('web')->user();
 
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
+        $data = Anak::with(['user' => function($q){
+            return $q->with('detail');
+        }])->where('id', $id)->first();
 
-                $user = auth()->guard('web')->user();
-                
-                $akteDir = null;
-                if (is_file($request->scan_akte_anak)) {
-                    $akteDir = 'scan/' . Str::random(32) . '.' . $request->file('scan_akte_anak')->getClientOriginalExtension();
-                    $directory = Storage::disk('public')->put($akteDir, fopen($request->file('scan_akte_anak'), 'r+'));
+        return Inertia::render('Register/Revisi',[
+            'value' => $data,
+            'editMode' => $data ? true : false,
+        ]);
+    }
+    
+    public function revisiStore($id, Request $request)
+    {
+        DB::beginTransaction();
+        try{
+
+            $user = auth()->guard('web')->user();
+            
+            $data = Anak::where('id', $id)->first();
+            $data->nama = $request->nama_anak;
+            $data->username = $request->username;
+            $data->jk = $request->jk_anak;
+            $data->anak_ke = $request->anak_ke;
+            $data->tmp_lahir = $request->tmp_lahir_anak;
+            $data->tgl_lahir = $request->tgl_lahir_anak;
+            $data->alamat = $request->alamat_anak;
+            $data->jarak = $request->jarak;
+            $data->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan_anak;
+            $data->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita_anak;
+            $data->makanan_yang_disukai = $request->makanan_yang_disukai_anak;
+            $data->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai_anak;
+            $data->alergi = $request->memiliki_alergi_anak;
+            $data->scan_akte = $akteDir ?? $request->scan_akte_anak;
+            if (is_file($request->scan_akte_anak)) {
+                if($data->scan_akte){
+                    Storage::disk('public')->delete($data->scan_akte);
                 }
 
-                $data = new Anak();
-                $data->user_id = $user->id;
-                $data->nama = $request->nama;
-                $data->username = $request->username;
-                $data->jk = $request->jk;
-                $data->anak_ke = $request->anak_ke;
-                $data->tmp_lahir = $request->tmp_lahir;
-                $data->tgl_lahir = $request->tgl_lahir;
-                $data->alamat = $request->alamat;
-                $data->jarak = $request->jarak;
-                $data->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan;
-                $data->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita;
-                $data->makanan_yang_disukai = $request->makanan_yang_disukai;
-                $data->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai;
-                $data->alergi = $request->memiliki_alergi;
-                $data->isAntarJemput = $request->isLaundry ? 1 : 0;
-                $data->isLaundry = $request->isAntarJemput ? 1 : 0;
-                $data->scan_akte = $akteDir ?? $request->scan_akte_anak;
-                $data->paket_id = $request->paket_id;
-                $data->status = 'Pending';
-                $data->save();
-
-
-                $invoice = new Invoice();
-                $invoice->nomor = $this->getNomor();
-                $invoice->tgl = Carbon::now();
-                $invoice->user_id = $user->id;
-                $invoice->anak_id = $data->id;
-                $invoice->uid = uniqid();
-                $invoice->status = 'unpaid';
-                $invoice->tgl_tempo = Carbon::now()->addDays(7);
-                $invoice->total = settings()->get('pembangunan') + settings()->get('pendaftaran') + settings()->get('spp');
-                $invoice->save();
-
-                $linesData = collect([
-                    [
-                        'tipe' => 'Pembangunan',
-                        'harga' => settings()->get('pembangunan')
-                    ],
-                    [
-                        'tipe' => 'Pendaftaran',
-                        'harga' => settings()->get('pendaftaran')
-                    ],
-                    [
-                        'tipe' => 'SPP',
-                        'harga' => settings()->get('spp')
-                    ]
-                ]);
-
-                foreach($linesData as $i){
-                    $line = new InvoiceDetail();
-                    $line->tipe = $i['tipe'];
-                    $line->harga = $i['harga'];
-                    $line->qty = 1;
-                    $invoice->detail()->save($line);
-
-                    $lines[] = [
-                        'id' => $line->id,
-                        'price' => $line->harga,
-                        'quantity' => $line->qty,
-                        'name' => $line->tipe,
-                    ];
-                }
-                
-                $payload = [
-                    'transaction_details' => [
-                        'order_id'     => $invoice->uid,
-                        'gross_amount' => $request->total,
-                    ],
-                    'customer_details' => [
-                        'first_name' => $user->nama,
-                        'email'      => $user->email,
-                    ],
-                    'item_details' => $lines,
-                ];
-
-                $snapToken = \Midtrans\Snap::getSnapToken($payload);
-                $invoice->ref = $snapToken;
-                $invoice->save();
-
-                $pdfData = Invoice::with(['user','detail'])->where('id', $invoice->id)
-                ->first();
-        
-                $invoiceFile = PDF::loadView('pdf.invoice', [
-                    'data' => $pdfData,
-                ], [ ], [
-                    'format' => 'A4-P'
-                ]);
-        
-                Notification::route('mail', $user->email)
-                ->notify(new RegisterNotification($invoiceFile->output(), $pdfData));
-                
-            }catch(\QueryException $e){
-                DB::rollback();
-                return back();
+                $akteDir = 'scan/' . Str::random(32) . '.' . $request->file('scan_akte_anak')->getClientOriginalExtension();
+                $directory = Storage::disk('public')->put($akteDir, fopen($request->file('scan_akte_anak'), 'r+'));
             }
-            DB::commit();
 
-            return Inertia::location('https://app.sandbox.midtrans.com/snap/v4/redirection/'. $snapToken);
+            $data->status = 'Pending';
+            $data->alasan = null;
+            $data->save();
+
+        }catch(\QueryException $e){
+            DB::rollback();
+            return back();
         }
+        DB::commit();
+        return redirect()->route('user.anak.show', $id);
     }
     
     private function getNomor()

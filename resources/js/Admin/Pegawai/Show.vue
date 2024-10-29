@@ -92,7 +92,7 @@ export default {
                 type: 'warning',
             })
             .then(() => {
-                this.$inertia.delete(this.route('admin.saksi.delete', {id : id}), {
+                this.$inertia.delete(this.route('admin.pegawai.delete', {id : id}), {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.fetchData();

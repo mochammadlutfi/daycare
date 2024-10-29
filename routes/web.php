@@ -55,7 +55,8 @@ Route::namespace('Frontend')->group(function(){
             ->group(function () {
                 Route::get('/pendaftaran/detail','RegisterController@detail')->name('register.detail');
                 Route::post('/pendaftaran/detail','RegisterController@detailStore');
-                Route::post('/pendaftaran/anak','RegisterController@anakStore')->name('register.anak');
+                Route::get('/pendaftaran/revisi/{id}','RegisterController@revisi')->name('register.revisi');
+                Route::post('/pendaftaran/revisi/{id}','RegisterController@revisiStore');
             });
         });
 
@@ -148,13 +149,17 @@ Route::namespace('Frontend')->group(function(){
 
 Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
     
-    Route::middleware('guest')->namespace('Auth')->group(function () {
-        Route::get('/','LoginController@showLoginForm')->name('login');
-        Route::post('/','LoginController@login');
+    Route::namespace('Auth')->group(function () {
+        Route::middleware('guest')->group(function () {
+            Route::get('/','LoginController@showLoginForm')->name('login');
+            Route::post('/','LoginController@login');
+        });
+        Route::middleware('auth:admin')->group(function () {
+            Route::post('/logout','LoginController@logout')->name('logout');
+        });
     });
 
     Route::middleware('auth:admin')->group(function () {
-        Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
         Route::get('/beranda','DashboardController@index')->name('dashboard');
         

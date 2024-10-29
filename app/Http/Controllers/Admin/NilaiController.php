@@ -65,7 +65,7 @@ class NilaiController extends Controller
                 $user = auth()->guard('admin')->user();
 
                 $data = new Nilai();
-                $data->tgl = $request->tgl;
+                $data->tgl = Carbon::parse($request->tgl);
                 $data->admin_id = $user->id;
                 $data->kelompok_id = $request->kelompok_id;
                 $data->jenis_id = $request->jenis_id;
@@ -118,7 +118,15 @@ class NilaiController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Nilai::with(['kelompok', 'kegiatan', 'jenis', 'admin', 
+        'detail' => function($q){
+            return $q->with('anak');
+        }
+        ])
+        ->where('id', $id)->first();
+        return Inertia::render('Nilai/Form', [
+            'data' => $data
+        ]);
     }
 
     /**

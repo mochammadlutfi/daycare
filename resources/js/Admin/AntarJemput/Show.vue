@@ -4,10 +4,10 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Antar Jemput</span>
                 <div class="space-x-1">
-                    <a :href="route('admin.antarjemput.edit', {id : data.id})" class="ep-button ep-button--primary">
+                    <Link :href="route('admin.antarjemput.edit', {id : data.id})" class="ep-button ep-button--primary">
                         <i class="si si-note me-1"></i>
                         Ubah
-                    </a>
+                    </Link>
                     <el-button type="danger" @click="hapus(data.id)">
                         <i class="si si-trash me-1"></i>
                         Hapus
@@ -64,8 +64,10 @@
 </template>
 <script>
 import moment from 'moment';
+import { Link } from '@inertiajs/vue3';
 export default {
     components : {
+        Link
     },
     data(){
         return {

@@ -184,6 +184,7 @@ class PaketController extends Controller
             $query->where('nama', 'LIKE', '%' . $search . '%')
             ->orWhere('usia', 'LIKE', '%' . $search . '%');
         })
+        ->withCount('anak')
         ->orderBy($sort, $sortDir);
         
         if($paging){

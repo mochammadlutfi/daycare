@@ -15,6 +15,9 @@ use Carbon\Carbon;
 use Image;
 use Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RejectNotification;
+use App\Notifications\ApproveNotification;
 
 
 use App\Models\User;
@@ -279,6 +282,14 @@ class PendaftaranController extends Controller
                     $data->tgl_terima = Carbon::now();
                 }
                 $data->save();
+
+                if($request->status == 'terima'){
+                    Notification::route('mail', $data->user->email)
+                    ->notify(new ApproveNotification());
+                }else{
+                    Notification::route('mail', $data->user->email)
+                    ->notify(new RejectNotification());
+                }
 
             }catch(\QueryException $e){
                 DB::rollback();

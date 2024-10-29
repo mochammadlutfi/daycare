@@ -54,6 +54,7 @@
                                     {{ currency(scope.row.spp) }}
                                 </template>
                             </el-table-column>
+                            <el-table-column prop="anak_count" label="peserta"/>
                             <el-table-column label="Aksi" align="center" width="180">
                                 <template #default="scope">
                                 <el-dropdown popper-class="dropdown-action" trigger="click">
@@ -172,6 +173,26 @@ export default {
             if (value) {
                 return moment(String(value)).format('DD MMM YYYY')
             }
+        },
+        hapus(id){
+            ElMessageBox.alert('Data yang dihapus tidak bisa dikembalikan!', 'Peringatan', {
+                showCancelButton: true,
+                confirmButtonText: 'Ya!',
+                cancelButtonText: 'Tidak!',
+                type: 'warning',
+            })
+            .then(() => {
+                this.$inertia.delete(this.route('admin.paket.delete', {id : id}), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        this.fetchData();
+                        ElMessage({
+                            type: 'success',
+                            message: 'Data Berhasil Dihapus!',
+                        });
+                    },
+                });
+            });
         },
     }
 }

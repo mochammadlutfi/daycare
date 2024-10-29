@@ -111,7 +111,7 @@ class PenggunaController extends Controller
     public function show($id)
     {
 
-        $data = User::where('id', $id)->first();
+        $data = User::with(['detail'])->where('id', $id)->first();
 
         return Inertia::render('Pengguna/Show', [
             'data' => $data,
@@ -213,7 +213,7 @@ class PenggunaController extends Controller
         DB::beginTransaction();
         try{
             
-            $pdk = Pendukung::find($id);
+            $pdk = User::find($id);
             $pdk->delete();
 
         }catch(\QueryException $e){
@@ -226,7 +226,7 @@ class PenggunaController extends Controller
         }
 
         DB::commit();
-        return redirect()->route('saksi.index');
+        return redirect()->route('admin.pengguna.index');
 
     }
 

@@ -39,7 +39,6 @@ class AnakController extends Controller
             if($user->anak()->count() > 1){
                 return Inertia::render('Anak/Index');
             }else{
-                // $data = Anak::where()
                 return Inertia::render('Anak/Show',[
                     'data' => $user->anak
                 ]);
@@ -74,7 +73,6 @@ class AnakController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $rules = [
             'nama' => 'required',
             'tmp_lahir' => 'required',

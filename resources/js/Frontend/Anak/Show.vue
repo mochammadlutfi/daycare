@@ -63,38 +63,38 @@
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Sosialisasi dengan lingkungan</el-col>
                         <el-col :md="16" :xs="12">
-                            :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan_anak }}</span>
+                            :  <span class="fw-semibold">{{ data.sosialisasi_dengan_lingkungan }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Sakit yang pernah diderita</el-col>
                         <el-col :md="16" :xs="12">
-                            :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita_anak }}</span>
+                            :  <span class="fw-semibold">{{ data.sakit_yang_pernah_diderita }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Makanan yang disukai</el-col>
                         <el-col :md="16" :xs="12">
-                            :  <span class="fw-semibold">{{ data.makanan_yang_disukai_anak }}</span>
+                            :  <span class="fw-semibold">{{ data.makanan_yang_disukai }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Makanan yang tidak disukai</el-col>
                         <el-col :md="16" :xs="12">
-                            :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai_anak }}</span>
+                            :  <span class="fw-semibold">{{ data.makanan_yang_tidak_disukai }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Memiliki Alergi</el-col>
                         <el-col :md="16" :xs="12">
-                            :  <span class="fw-semibold">{{ data.memiliki_alergi_anak }}</span>
+                            :  <span class="fw-semibold">{{ data.memiliki_alergi }}</span>
                         </el-col>
                     </el-row>
                     <el-row class="mb-2" :gutter="10">
                         <el-col :md="8" :xs="12">Scan Akte Kelahiran</el-col>
                         <el-col :md="16" :xs="12">
                             :  
-                            <a :href="`/uploads/${data.scan_akte}`" class="ep-button ep-button--primary" target="_blank" v-if="data.scan_akte">
+                            <a :href="`${data.scan_akte}`" class="ep-button ep-button--primary" target="_blank" v-if="data.scan_akte">
                                 Lihat Akte Kelahiran
                             </a>
                             <template v-else>

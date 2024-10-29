@@ -186,8 +186,8 @@ class AntarJemputController extends Controller
                 if(count($request->images)){
                     foreach($request->images as $d){
                         if($d['status'] != "success"){
-                            $img = new AntarJemput();
-                            $img->aktivitas_id = $data->id;
+                            $img = new AntarJemputFoto();
+                            $img->antarjemput_id = $data->id;
                             $img->nama = $d['name'];
                             $img->path = $this->uploadImage($d['raw'], $data->id);
                             $img->save();
@@ -197,7 +197,7 @@ class AntarJemputController extends Controller
 
                 if(count($request->imagesDeleted)){
                     foreach($request->imagesDeleted as $d){
-                        $img = AntarJemput::where('aktivitas_id', $id)
+                        $img = AntarJemputFoto::where('antarjemput_id', $id)
                         ->where('path', $d['url'])
                         ->delete();
                     }
