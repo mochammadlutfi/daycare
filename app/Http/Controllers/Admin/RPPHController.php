@@ -242,7 +242,7 @@ class RPPHController extends Controller
         DB::beginTransaction();
         try{
             
-            $pdk = Raport::find($id);
+            $pdk = RPPH::find($id);
             $pdk->delete();
 
         }catch(\QueryException $e){

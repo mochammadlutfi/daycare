@@ -520,7 +520,7 @@ export default {
                 type: 'warning',
             })
             .then(() => {
-                this.$inertia.delete(this.route('admin.raport.delete', {id : id}), {
+                this.$inertia.delete(this.route('admin.rpph.delete', {id : id}), {
                     preserveScroll: true,
                     onSuccess: () => {
                         ElMessage({
