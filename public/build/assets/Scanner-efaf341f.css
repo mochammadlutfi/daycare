@@ -1,1 +1,0 @@
-.scanner-frame[data-v-c6a088ed]{position:relative;width:300px;height:300px;border:2px solid #00ff00;box-shadow:0 0 10px #0f0;margin:auto}.scanner-frame[data-v-c6a088ed]:before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:#00ff00;animation:scan-c6a088ed 2s infinite;z-index:10}@keyframes scan-c6a088ed{0%{top:0}to{top:100%}}

@@ -70,6 +70,12 @@ class MenuHelper
         ]);
 
         $menuData->push([
+            "icon" => "fa fa-check-square",
+            "name" => "RPPH",
+            "to" => "admin.rpph.index",
+        ]);
+
+        $menuData->push([
             'svg' => true,
             "icon" => '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
     <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />

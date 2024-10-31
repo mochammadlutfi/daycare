@@ -115,12 +115,16 @@ export default {
                     this.loading = false;
                 },
                 onSuccess: () => {
+                    var audio = new Audio('/sound/success.mp3'); // path to file
+                    audio.play();
                     ElMessage({
                         type: 'success',
                         message: 'Terimakasih',
                     });
                 },
                 onError: (e) => {
+                    var audio = new Audio('/sound/error.mp3'); // path to file
+                    audio.play();
                     ElMessage({
                         type: 'error',
                         message: e.code,

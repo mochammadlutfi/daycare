@@ -359,6 +359,35 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/{id}/pdf', 'RaportController@pdf')->name('pdf');
         });
 
+        Route::prefix('/rpph')->name('rpph.')->group(function () {
+            Route::get('/', 'RPPHController@index')->name('index');
+            Route::get('/create', 'RPPHController@create')->name('create');
+            Route::post('/store','RPPHController@store')->name('store');
+            Route::get('/data', 'RPPHController@data')->name('data');
+            Route::get('/{id}', 'RPPHController@show')->name('show');
+            Route::get('/{id}/edit','RPPHController@edit')->name('edit');
+            Route::post('/{id}/update','RPPHController@update')->name('update');
+            Route::delete('/{id}/hapus','RPPHController@destroy')->name('delete');
+            Route::get('/{id}/pdf', 'RPPHController@pdf')->name('pdf');
+
+            Route::prefix('/{rpph}/asesmen')->name('asesmen.')->group(function () {
+                Route::get('/','AsesmenController@pdf')->name('pdf');
+                Route::post('/store','AsesmenController@store')->name('store');
+                Route::post('/{id}/update','AsesmenController@update')->name('update');
+                Route::delete('/{id}/hapus','AsesmenController@destroy')->name('delete');
+            });
+            
+            Route::prefix('/{rpph}/awal')->name('awal.')->group(function () {
+                Route::post('/store','AsesmenAwalController@store')->name('store');
+                Route::post('/{id}/update','AsesmenAwalController@update')->name('update');
+                Route::delete('/{id}/hapus','AsesmenAwalController@destroy')->name('delete');
+            });
+
+            Route::prefix('/{rpph}/sumatif')->name('sumatif.')->group(function () {
+                Route::post('/{id}/update','AsesmenAwalController@updateSumatif')->name('update');
+            });
+        });
+
 
         Route::prefix('/antarjemput')->name('antarjemput.')->group(function () {
             Route::get('/', 'AntarJemputController@index')->name('index');

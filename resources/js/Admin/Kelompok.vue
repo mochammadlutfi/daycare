@@ -49,12 +49,6 @@
                                     </el-button>
                                     <template #dropdown>
                                         <el-dropdown-menu>
-                                            <el-dropdown-item class="d-flex align-items-center justify-content-between space-x-1">
-                                                <a :href="route('admin.kelompok.jadwal.index', {id : scope.row.id})">
-                                                    Jadwal
-                                                    <i class="fa fa-fw fa-calendar-alt"></i>
-                                                </a>
-                                            </el-dropdown-item>
                                             <el-dropdown-item class="d-flex align-items-center justify-content-between space-x-1" @click.prevent="edit(scope.row)">
                                                 Ubah
                                                 <i class="si fa-fw si-note"></i>

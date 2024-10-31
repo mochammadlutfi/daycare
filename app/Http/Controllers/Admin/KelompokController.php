@@ -89,7 +89,9 @@ class KelompokController extends Controller
             DB::beginTransaction();
             try{
                     $data = Kelompok::where('id', $id)->first();
-                    $data->name = $request->name;
+                    $data->nama = $request->nama;
+                    $data->admin_id = $request->admin_id;
+                    $data->usia = $request->usia;
                     $data->save();
 
             }catch(\QueryException $e){
@@ -121,7 +123,7 @@ class KelompokController extends Controller
         }
 
         DB::commit();
-        return redirect()->route('admin.contact.index');
+        return redirect()->route('admin.kelompok.index');
     }
     
     public function data(Request $request)

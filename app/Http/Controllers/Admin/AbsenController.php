@@ -108,7 +108,7 @@ class AbsenController extends Controller
     
     public function scan(Request $request)
     {
-        $anak = Anak::where('code', $request->code)->first();
+        $anak = Anak::where('id', $request->code)->first();
         if($anak){
             DB::beginTransaction();
             try{
