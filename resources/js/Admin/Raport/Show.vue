@@ -4,7 +4,7 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Raport</span>
                 <div class="space-x-1">
-                    <a :href="route('admin.raport.pdf', {id : data.id})" class="ep-button ep-button--primary">
+                    <a :href="route('admin.raport.pdf', {id : data.id})" target="_blank" class="ep-button ep-button--primary">
                         <i class="fa fa-download me-1"></i>
                         Download PDF
                     </a>
@@ -25,7 +25,7 @@
                             <el-row class="mb-2" :gutter="10">
                                 <el-col :lg="8">Tanggal</el-col>
                                 <el-col :lg="16">
-                                    <div class="fw-semibold">{{ format_date(data.tgl) }}</div>
+                                    <div class="fw-semibold">{{ format_date(data.tgl_mulai) }} - {{ format_date(data.tgl_selesai) }}</div>
                                 </el-col>
                             </el-row>
                             <el-row class="mb-2" :gutter="10">
@@ -40,8 +40,6 @@
                                     <div class="fw-semibold">{{ data.anak.nama }}</div>
                                 </el-col>
                             </el-row>
-                        </el-col>
-                        <el-col :lg="12">
                             <el-row class="mb-2" :gutter="10">
                                 <el-col :lg="8">Tinggi Badan</el-col>
                                 <el-col :lg="16">
@@ -52,6 +50,32 @@
                                 <el-col :lg="8">Berat Badan</el-col>
                                 <el-col :lg="16">
                                     <div class="fw-semibold">{{ data.berat }} Kg</div>
+                                </el-col>
+                            </el-row>
+                        </el-col>
+                        <el-col :lg="12">
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Hadir</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ data.hadir }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Izin</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ data.izin }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Sakit</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ data.sakit }}</div>
+                                </el-col>
+                            </el-row>
+                            <el-row class="mb-2" :gutter="10">
+                                <el-col :lg="8">Tanpa Keterangan</el-col>
+                                <el-col :lg="16">
+                                    <div class="fw-semibold">{{ data.alpa }}</div>
                                 </el-col>
                             </el-row>
                         </el-col>

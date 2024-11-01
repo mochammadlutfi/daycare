@@ -71,7 +71,7 @@ class AnakController extends Controller
     public function edit($id)
     {
 
-        $value = Dukungan::with(['user' => function($q){
+        $value = Anak::with(['user' => function($q){
             return $q->with('detail');
         }, 'kelompok'
         ])
@@ -91,50 +91,52 @@ class AnakController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        $validator = $this->validate($request->all(), true);
+        $rules = [
+            'nama' => 'required',
+            'username' => 'required',
+            'jk' => 'required',
+            'tmp_lahir' => 'required',
+            'tgl_lahir' => 'required',
+            'alamat' => 'required',
+            'jarak' => 'required',
+            'sosialisasi_dengan_lingkungan' => 'required',
+        ];
+
+        $pesan = [
+            'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'username.required' => 'Nama Panggilan Wajib Diisi!',
+            'jk.required' => 'Jenis Kelamin Wajib Diisi!',
+            'tmp_lahir.required' => 'Tempat Lahir Wajib Diisi!',
+            'tgl_lahir.required' => 'Tanggal Lahir Wajib Diisi!',
+            'alamat.required' => 'Alamat Lengkap Wajib Diisi!',
+            'jarak.required' => 'Jarak Rumah Wajib Diisi!',
+            'sosialisasi_dengan_lingkungan.required' => 'Sosialisasi dengan lingkungan Ke Wajib Diisi!',
+        ];
+
+        $validator =  Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()){
             return back()->withErrors($validator->errors());
         }else{
             DB::beginTransaction();
             try{
                 
-                $data = Dukungan::where('id', $id)->first();
-                $data->nik = $request->nik;
+                $data = Anak::where('id', $id)->first();
+                $data->username = $request->username;
                 $data->nama = $request->nama;
-                $data->jk = ($request->jk == 'Laki-Laki') ? 'L' : 'P';
-                $data->tgl_lahir = Carbon::parse($request->tglLahir)->format('Y-m-d');
-                $data->tmp_lahir = $request->tmpLahir;
+                $data->jk = $request->jk;
+                $data->tgl_lahir = Carbon::parse($request->tgl_lahir)->format('Y-m-d');
+                $data->tmp_lahir = $request->tmp_lahir;
                 $data->alamat = $request->alamat;
-                $data->tps = $request->tps;
-                $data->rt = $request->rt;
-                $data->rw = $request->rw;
-                $data->kota_id = $request->kota_id;
-                $data->kecamatan_id = $request->kecamatan_id;
-                $data->kelurahan_id = $request->kelurahan_id;
-                $data->email = $request->email;
-                $data->phone = $request->phone;
-                $data->ref = $request->ref;
-                $data->user_id = $request->user_id;
-
-                if($request->hasFile('image')){
-                    if($data->image){
-                        if(Storage::disk('public')->exists($data->image)){
-                            Storage::disk('public')->delete($data->image);
-                        }
-                    }
-                    $data->image = $this->uploadImage($request->file('image'), $user_id);
-                }
-                
-                if($request->hasFile('ktp')){
-                    if($data->ktp){
-                        if(Storage::disk('public')->exists($data->ktp)){
-                            Storage::disk('public')->delete($data->ktp);
-                        }
-                    }
-                    $data->ktp = $this->uploadImage($request->file('ktp'), $user_id, 'ktp');
-                }
-
+                $data->anak_ke = $request->anak_ke;
+                $data->jarak = $request->jarak;
+                $data->sosialisasi_dengan_lingkungan = $request->sosialisasi_dengan_lingkungan;
+                $data->sakit_yang_pernah_diderita = $request->sakit_yang_pernah_diderita;
+                $data->makanan_yang_disukai = $request->makanan_yang_disukai;
+                $data->makanan_yang_tidak_disukai = $request->makanan_yang_tidak_disukai;
+                $data->alergi = $request->alergi;
+                $data->scan_akte = $request->scan_akte;
+                $data->isAntarJemput = $request->isAntarJemput;
+                $data->isLaundry = $request->isLaundry;
                 $data->save();
 
             }catch(\QueryException $e){
@@ -143,7 +145,7 @@ class AnakController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.dukungan.show', $id);
+            return redirect()->route('admin.anak.show', $id);
         }
     }
 
@@ -335,46 +337,5 @@ class AnakController extends Controller
 
     private function validate($data, $editMode = false){
         
-        $rules = [
-            'nama' => 'required',
-            'ktp' => 'required',
-            'jk' => 'required',
-            'tmpLahir' => 'required',
-            'tglLahir' => 'required',
-            'alamat' => 'required',
-            'rt' => 'required',
-            'rw' => 'required',
-            'kota_id' => 'required',
-            'kecamatan_id' => 'required',
-            'kelurahan_id' => 'required',
-        ];
-
-        $pesan = [
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'ktp.required' => 'KTP Wajib Diisi!',
-            'jk.required' => 'Jenis Kelamin Wajib Diisi!',
-            'tmpLahir.required' => 'Tempat Lahir Wajib Diisi!',
-            'tglLahir.required' => 'Tanggal Lahir Wajib Diisi!',
-            'alamat.required' => 'Alamat Lengkap Wajib Diisi!',
-            'rt.required' => 'RT Wajib Diisi!',
-            'rw.required' => 'RW Wajib Diisi!',
-            'kota_id.required' => 'Kota Wajib Diisi!',
-            'kecamatan_id.required' => 'Kecamatan Wajib Diisi!',
-            'kelurahan_id.required' => 'Desa/Kelurahan Wajib Diisi!',
-            'email.required' => 'Alamat Email Wajib Diisi!',
-            'email.unique' => 'Alamat Email Sudah Digunakan!',
-        ];
-        
-
-        if(!$editMode){
-            $rules['username'] = 'required|unique:saksi,username';
-            $rules['password'] = 'required';
-
-            $pesan['username.required'] = 'Username Wajib Diisi!';
-            $pesan['username.unique'] = 'Username Sudah Digunakan!';
-            $pesan['password.required'] = 'Password Wajib Diisi!';
-        }
-
-        return Validator::make($data, $rules, $pesan);
     }
 }

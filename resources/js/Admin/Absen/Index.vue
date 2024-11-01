@@ -85,7 +85,7 @@
                     <el-form-item class="mb-4" label="Kelompok">
                         <select-kelompok name="kelompok" v-model="form.kelompok"/>
                     </el-form-item>
-                    <el-form-item class="mb-4" :label="(form.tipe == 'bulanan') ? 'Bulan' :  'Tahun'">
+                    <el-form-item class="mb-4" label="Bulan">
                         <el-date-picker
                         v-model="form.tgl"
                         format="MMMM YYYY"

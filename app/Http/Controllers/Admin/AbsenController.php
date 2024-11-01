@@ -51,6 +51,36 @@ class AbsenController extends Controller
 
     public function scanner()
     {
+        // $startDate = Carbon::create(2024, 10, 1);
+        // $endDate = $startDate->copy()->endOfMonth();
+        // $currentDate = $startDate->copy();
+
+        // // Loop through each day from the start date to the end date
+        // while ($currentDate->lte($endDate)) {
+        //     // echo $currentDate->translatedFormat('d F Y') . "\n";
+        //     // Increment the current date by one day
+        //     // $currentDate->addDay();
+            
+        //     $data = new Absen();
+        //     $data->tgl = $currentDate;
+        //     $data->admin_id = 1;
+        //     $data->kelompok_id = 1;
+        //     $data->save();
+
+        //     // foreach($request->lines as $i){
+        //     $anak = Anak::orderBy('nama', 'ASC')->get();
+        //     foreach($anak as $a){
+        //         $line = new AbsenDetail();
+        //         $line->anak_id = $a->id;
+        //         $line->user_id = $a->user_id;
+        //         $line->status = 'Hadir';
+        //         $line->check_in = '08:00:00';
+        //         $line->check_out = '09:00:00';
+        //         $data->detail()->save($line);
+        //     }
+        //     $currentDate->addDay();
+        // }
+        // dd('done');
         return Inertia::render('Absen/Scanner');
     }
 
@@ -338,10 +368,8 @@ class AbsenController extends Controller
             }
         }
 
-
         return response()->json($data);
     }
-
     
     public function report(Request $request)
     {
@@ -351,4 +379,25 @@ class AbsenController extends Controller
         return Excel::download(new AbsenExport($kelompok, $tgl), 'Data Report Absen.xlsx');
     }
     
+    public function total(Request $request)
+    {
+        $anak = $request->anak;
+        
+        $statusCounts = AbsenDetail::selectRaw('status, COUNT(*) as total')
+        ->groupBy('status')
+        ->where('anak_id', $anak)
+        ->pluck('total', 'status');
+
+        $totalHadir = $statusCounts->get('Hadir', 0);
+        $totalIzin = $statusCounts->get('Izin', 0);
+        $totalSakit = $statusCounts->get('Sakit', 0);
+        $totalAlpa = $statusCounts->get('Alpa', 0);
+
+        return response()->json([
+            'hadir' => $totalHadir,
+            'izin' => $totalIzin,
+            'sakit' => $totalSakit,
+            'alpa' => $totalAlpa,
+        ]);
+    }
 }

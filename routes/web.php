@@ -162,30 +162,6 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
     Route::middleware('auth:admin')->group(function () {
 
         Route::get('/beranda','DashboardController@index')->name('dashboard');
-        
-        Route::prefix('/video')->name('video.')->group(function () {
-            Route::get('/', 'VideoController@index')->name('index');
-            Route::get('/create', 'VideoController@create')->name('create');
-            Route::post('/store','VideoController@store')->name('store');
-            Route::get('/data', 'VideoController@data')->name('data');
-            Route::get('/slug', 'VideoController@check_slug')->name('slug');
-            Route::get('/{id}', 'VideoController@show')->name('show');
-            Route::get('/{id}/edit','VideoController@edit')->name('edit');
-            Route::post('/{id}/update','VideoController@update')->name('update');
-            Route::delete('/{id}/hapus','VideoController@destroy')->name('delete');
-        });
-        
-        Route::prefix('/foto')->name('foto.')->group(function () {
-            Route::get('/', 'FotoController@index')->name('index');
-            Route::get('/create', 'FotoController@create')->name('create');
-            Route::post('/store','FotoController@store')->name('store');
-            Route::get('/data', 'FotoController@data')->name('data');
-            Route::get('/slug', 'FotoController@check_slug')->name('slug');
-            Route::get('/{id}', 'FotoController@show')->name('show');
-            Route::get('/{id}/edit','FotoController@edit')->name('edit');
-            Route::post('/{id}/update','FotoController@update')->name('update');
-            Route::delete('/{id}/hapus','FotoController@destroy')->name('delete');
-        });
 
         Route::prefix('/pendaftaran')->name('register.')->group(function () {
             Route::get('/', 'PendaftaranController@index')->name('index');
@@ -326,12 +302,12 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/data', 'AbsenController@data')->name('data');
             Route::get('/anak', 'AbsenController@anak')->name('anak');
             Route::get('/report', 'AbsenController@report')->name('report');
+            Route::get('/total', 'AbsenController@total')->name('total');
             Route::get('/{id}', 'AbsenController@show')->name('show');
             Route::get('/{id}/edit','AbsenController@edit')->name('edit');
             Route::post('/{id}/update','AbsenController@update')->name('update');
             Route::delete('/{id}/hapus','AbsenController@destroy')->name('delete');
         });
-
 
         Route::prefix('/penilaian')->name('nilai.')->group(function () {
             Route::get('/', 'NilaiController@index')->name('index');
@@ -387,7 +363,6 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
                 Route::post('/{id}/update','AsesmenAwalController@updateSumatif')->name('update');
             });
         });
-
 
         Route::prefix('/antarjemput')->name('antarjemput.')->group(function () {
             Route::get('/', 'AntarJemputController@index')->name('index');

@@ -8,25 +8,32 @@
                 
                 <div class="block rounded">
                     <div class="block-content p-4" v-loading="loading">
-                        <el-row :gutter="40">
-                            <el-col :md="8">
-                                <el-form-item label="Tanggal" :error="errors.tgl">
-                                    <el-date-picker v-model="form.tgl" type="date" placeholder="Tanggal"
-                                        format="DD-MM-YYYY" value-format="YYYY-MM-DD" class="w-100"/>
+                        <el-row :gutter="40" class="mb-4">
+                            <el-col :md="12">
+                                <el-form-item label="Tanggal Periode" :error="errors.tgl">
+                                    <el-date-picker v-model="form.tgl" 
+                                    type="daterange"
+                                    range-separator="sampai" 
+                                    placeholder="Tanggal"
+                                    format="DD MMMM YYYY" 
+                                    value-format="YYYY-MM-DD" 
+                                    start-placeholder="Tanggal mulai"
+                                    end-placeholder="Tanggal selesai"
+                                    style="width: 100%" />
                                     <span class="fs-xs">Tanggal Bisa Diketik atau dipilih (DD-MM-YYYY)</span>
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="8">
+                            <el-col :md="12">
                                 <el-form-item label="Kelompok" :error="errors.kelompok_id">
                                     <select-kelompok v-model="form.kelompok_id"/>
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="8">
+                            <el-col :md="12">
                                 <el-form-item label="Anak" :error="errors.anak_id">
-                                    <select-anak v-model="form.anak_id" :disabled="(form.kelompok_id) ? false : true" hasParent :kelompok_id="form.kelompok_id" />
+                                    <select-anak v-model="form.anak_id" :disabled="(form.kelompok_id) ? false : true" hasParent :kelompok_id="form.kelompok_id" @change="fetchAbsen"/>
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="8">
+                            <el-col :md="6">
                                 <el-form-item label="Tinggi Badan" :error="errors.tinggi">
                                     <el-input v-model="form.tinggi">
                                         <template #append>
@@ -35,7 +42,7 @@
                                     </el-input>
                                 </el-form-item>
                             </el-col>
-                            <el-col :md="8">
+                            <el-col :md="6">
                                 <el-form-item label="Berat Badan" :error="errors.berat">
                                     <el-input v-model="form.berat">
                                         <template #append>
@@ -45,12 +52,46 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
+                        <el-row class="fs-sm mb-4" v-if="form.anak_id">
+                            <el-col :md="6">
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :lg="14">Hadir</el-col>
+                                    <el-col :lg="8">
+                                        : <span class="fw-semibold">{{ form.hadir }}</span>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :md="6">
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :lg="14">Izin</el-col>
+                                    <el-col :lg="8">
+                                        : <span class="fw-semibold">{{ form.izin }}</span>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :md="6">
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :lg="14">Sakit</el-col>
+                                    <el-col :lg="8">
+                                        : <span class="fw-semibold">{{ form.sakit }}</span>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :md="6">
+                                <el-row class="mb-2" :gutter="10">
+                                    <el-col :lg="14">Tanpa Keterangan</el-col>
+                                    <el-col :lg="8">
+                                        : <span class="fw-semibold">{{ form.alpa }}</span>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-row>
 
                         <el-form-item :error="errors.perkembangan_nilai_agama_dan_moral">
                             <template #label>
                                 <div class="d-flex justify-content-between">
                                     <label class="ep-form-item__label my-auto">Perkembangan Nilai Agama dan Moral</label>
-                                    <el-button @click.prevent="openModal('Perkembangan Nilai Agama dan Moral')">Riwayat nilai harian</el-button>
+                                    <el-button @click.prevent="openModal('Perkembangan Nilai Agama dan Moral')" v-if="form.anak_id">Riwayat nilai harian</el-button>
                                 </div>
                             </template>
                             <el-input type="textarea" rows="4" v-model="form.perkembangan_nilai_agama_dan_moral" placeholder="Masukan Penilaian Perkembangan Nilai Agama dan Moral"/>
@@ -60,7 +101,7 @@
                             <template #label>
                                 <div class="d-flex justify-content-between">
                                     <label class="ep-form-item__label my-auto">Perkembangan Sosial dan Emosional</label>
-                                    <el-button @click.prevent="openModal('Perkembangan Sosial dan Emosional')">Riwayat nilai harian</el-button>
+                                    <el-button @click.prevent="openModal('Perkembangan Sosial dan Emosional')" v-if="form.anak_id">Riwayat nilai harian</el-button>
                                 </div>
                             </template>
                             <el-input type="textarea" rows="4" v-model="form.perkembangan_sosial_emosional" placeholder="Masukan Penilaian Perkembangan Sosial dan Emosional"/>
@@ -70,7 +111,7 @@
                             <template #label>
                                 <div class="d-flex justify-content-between">
                                     <label class="ep-form-item__label my-auto">Perkembangan Fisik dan Motorik</label>
-                                    <el-button @click.prevent="openModal('Perkembangan Fisik dan Motorik')">Riwayat nilai harian</el-button>
+                                    <el-button @click.prevent="openModal('Perkembangan Fisik dan Motorik')" v-if="form.anak_id">Riwayat nilai harian</el-button>
                                 </div>
                             </template>
                             <el-input type="textarea" rows="4" v-model="form.perkembangan_fisik_motorik" placeholder="Masukan Fisik dan Motorik"/>
@@ -80,7 +121,7 @@
                             <template #label>
                                 <div class="d-flex justify-content-between">
                                     <label class="ep-form-item__label my-auto">Perkembangan Kognitif</label>
-                                    <el-button @click.prevent="openModal('Perkembangan Kognitif')">Riwayat nilai harian</el-button>
+                                    <el-button @click.prevent="openModal('Perkembangan Kognitif')" v-if="form.anak_id">Riwayat nilai harian</el-button>
                                 </div>
                             </template>
                             <el-input type="textarea" rows="4" v-model="form.perkembangan_kognitif" placeholder="Masukan Penilaian Perkembangan Kognitif"/>
@@ -90,7 +131,7 @@
                             <template #label>
                                 <div class="d-flex justify-content-between">
                                     <label class="ep-form-item__label my-auto">Perkembangan Bahasa</label>
-                                    <el-button @click.prevent="openModal('Perkembangan Bahasa')">Riwayat nilai harian</el-button>
+                                    <el-button @click.prevent="openModal('Perkembangan Bahasa')" v-if="form.anak_id">Riwayat nilai harian</el-button>
                                 </div>
                             </template>
                             <el-input type="textarea" rows="4" v-model="form.perkembangan_bahasa" placeholder="Masukan Perkembangan Bahasa"/>
@@ -171,11 +212,18 @@ export default {
             title : "Tambah Raport Baru",
             disableKota : false,
             form : {
-                tgl: new dayjs().format(),
+                tgl: [
+                    new dayjs().format(),
+                    new dayjs().format()
+                ],
                 kelompok_id : null,
                 anak_id : null,
                 tinggi : null,
                 berat : null,
+                hadir : 0,
+                izin : 0,
+                sakit: 0,
+                alpa : 0,
                 perkembangan_nilai_agama_dan_moral : null,
                 perkembangan_sosial_emosional : null,
                 perkembangan_fisik_motorik : null,
@@ -344,7 +392,29 @@ export default {
         },
         closeChart(){
 
-        }
+        },
+        async fetchAbsen(){
+            try {
+                this.isLoading = true;
+                this.lines = [];
+                const response = await axios.get(this.route("admin.absen.total"),{
+                    params: {
+                        anak : this.form.anak_id
+                    }
+                });
+                if(response.status == 200){
+                    const d = response.data;
+                    // console.log(d);
+                    this.form.hadir = d.hadir;
+                    this.form.izin = d.izin;
+                    this.form.sakit = d.sakit;
+                    this.form.alpa = d.alpa;
+                }
+                this.isLoading = false;
+            } catch (error) {
+                console.error(error);
+            }
+        },
     }
 }
 </script>

@@ -43,37 +43,57 @@
                 <td>:</td>
                 <td>{{ $data->tinggi }} CM / {{ $data->berat }} Kg</td>
             <tr>
+            <tr>
+                <td>Hadir</td>
+                <td>:</td>
+                <td>{{ $data->hadir }}</td>
+            <tr>
+                <tr>
+                    <td>Izin</td>
+                    <td>:</td>
+                    <td>{{ $data->izin }}</td>
+                <tr>
+            <tr>
+                <td>Sakit</td>
+                <td>:</td>
+                <td>{{ $data->sakit }}</td>
+            <tr>
+            <tr>
+                <td>Tanpa Keterangan</td>
+                <td>:</td>
+                <td>{{ $data->alpa }}</td>
+            <tr>
         </table>
         <br/>
         <br/>
         <table class="table table-bordered datatable w-100">
             <tbody>
                 <tr class="">
-                    <td class="fw-bold">Perkembangan Nilai Agama dan Moral</td>
+                    <td style="font-weight:bold;font-size:12pt">Perkembangan Nilai Agama dan Moral</td>
                 </tr>
                 <tr>
                     <td>{{ $data->perkembangan_nilai_agama_dan_moral}}</td>
                 </tr>
                 <tr class="">
-                    <td class="fw-bold">Perkembangan Sosial dan Emosional</td>
+                    <td style="font-weight:bold;font-size:12pt">Perkembangan Sosial dan Emosional</td>
                 </tr>
                 <tr>
                     <td>{{ $data->perkembangan_sosial_emosional}}</td>
                 </tr>
                 <tr class="">
-                    <td class="fw-bold">Perkembangan Fisik dan Motorik</td>
+                    <td style="font-weight:bold;font-size:12pt">Perkembangan Fisik dan Motorik</td>
                 </tr>
                 <tr>
                     <td>{{ $data->perkembangan_fisik_motorik}}</td>
                 </tr>
                 <tr class="">
-                    <td class="fw-bold">Perkembangan Kognitif</td>
+                    <td style="font-weight:bold;font-size:12pt">Perkembangan Kognitif</td>
                 </tr>
                 <tr>
                     <td>{{ $data->perkembangan_kognitif}}</td>
                 </tr>
                 <tr class="">
-                    <td class="fw-bold">Perkembangan Bahasa</td>
+                    <td style="font-weight:bold;font-size:12pt">Perkembangan Bahasa</td>
                 </tr>
                 <tr>
                     <td>{{ $data->perkembangan_bahasa}}</td>

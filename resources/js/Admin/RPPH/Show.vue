@@ -170,6 +170,11 @@
                             <el-table :data="d.nilai" border class="mb-4">
                                 <el-table-column type="index" width="50" />
                                 <el-table-column label="IKTP" prop="line.iktp"/>
+                                <el-table-column label="Muncul/Tidak" prop="status" width="140">
+                                    <template #default="scope">
+                                        {{ scope.row.status ?? '-' }}
+                                    </template>    
+                                </el-table-column>
                                 <el-table-column label="Hasil Pengamatan" prop="keterangan"/>
                             </el-table>
                             <div class="demo-image__preview">
@@ -233,15 +238,20 @@
                 </div>
             </el-form>
         </el-dialog>
-        <el-dialog v-model="modalAsesmen" :title="titleModalAwal" width="40%" :close-on-click-modal="false" :close-on-press-escape="false">
+        <el-dialog v-model="modalAsesmen" :title="titleModalAsesmen" width="40%" :close-on-click-modal="false" :close-on-press-escape="false">
             <el-form :model="formAsesmen" @submit.prevent="submitAsesmen" label-position="top" v-loading="loadingAsesmen">
                     <el-form-item label="Anak" :error="errors.anak_id">
                         <select-anak v-model="formAsesmen.anak_id" class="w-100" hasParent :kelompok_id="data.kelompok_id" />
                     </el-form-item>
-                    <el-form-item :label="d.iktp" :error="errors.keterangan" v-for="(d, i) in formAsesmen.lines" :key="i">
-                        <el-input v-model="d.keterangan" type="textarea" :rows="4" placeholder="Masukan Anekdot"/>
-                    </el-form-item>
-
+                    <template v-for="(d, i) in formAsesmen.lines" :key="i">
+                        <el-radio-group v-model="d.status">
+                            <el-radio value="Muncul">Muncul</el-radio>
+                            <el-radio value="Tidak Muncul">Tidak Muncul</el-radio>
+                        </el-radio-group>
+                        <el-form-item :label="d.iktp" :error="errors.keterangan" >
+                            <el-input v-model="d.keterangan" type="textarea" :rows="4" placeholder="Masukan Anekdot"/>
+                        </el-form-item>
+                    </template>
                     <el-form-item label="Foto Dokumentasi" label-width="180px">
                         <el-upload action="#" v-model:file-list="formAsesmen.images" 
                         :on-remove="removeImage" list-type="picture-card" :auto-upload="false">
@@ -411,6 +421,7 @@ export default {
                         asesmen_id : null,
                         rpph_line_id : d.id,
                         iktp: d.iktp,
+                        status : 0,
                         keterangan : null,
                     });
                 });
@@ -431,6 +442,7 @@ export default {
                         asesmen_id : d.asesmen_id,
                         rpph_line_id : d.rpph_line_id,
                         iktp: d.line.iktp,
+                        status: d.line.status,
                         keterangan : d.keterangan,
                     });
                 });

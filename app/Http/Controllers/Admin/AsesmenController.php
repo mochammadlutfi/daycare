@@ -67,6 +67,7 @@ class AsesmenController extends Controller
                     $line = new AsesmenNilai();
                     $line->asesmen_id = $data->id;
                     $line->rpph_line_id = $i['rpph_line_id'];
+                    $line->status = $i['status'];
                     $line->keterangan = $i['keterangan'];
                     $line->save();
                 }
@@ -99,6 +100,7 @@ class AsesmenController extends Controller
      */
     public function update(Request $request, $rpph, $id)
     {
+        // dd($request->all());
         $rules = [
             'anak_id' => 'required',
             'lines' => 'required',
@@ -127,6 +129,7 @@ class AsesmenController extends Controller
                     $line = AsesmenNilai::firstOrNew(['id' => $i['id']]);
                     $line->asesmen_id = $data->id;
                     $line->rpph_line_id = $i['rpph_line_id'];
+                    $line->status = $i['status'];
                     $line->keterangan = $i['keterangan'];
                     $line->save();
                 }

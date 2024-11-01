@@ -25,7 +25,7 @@ use App\Models\UserDetail;
 use App\Models\Anak;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
-use App\Models\paket;
+use App\Models\Paket;
 class PendaftaranController extends Controller
 {
 

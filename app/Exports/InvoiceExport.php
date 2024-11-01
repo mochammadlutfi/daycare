@@ -73,7 +73,6 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
 
     public function map($data): array
     {
-        // dd($data);
         $this->rowNumber++;
         $total = 0;
         $content = [
@@ -87,8 +86,7 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
                                 ->whereMonth('tgl', $month)
                                 ->first();
             if ($invoiceInMonth) {
-                $content[] = 
-                $invoiceInMonth->nomor . ' ' . Carbon::parse($invoiceInMonth->tgl)->format('d-m-Y') . ' ' . $invoiceInMonth->metode;
+                $content[] = $invoiceInMonth->total;
                 $total += $invoiceInMonth->total;
             } else {
                 $content[] = '-';
@@ -104,8 +102,6 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-
-                
 
                 $sheet = $event->sheet->getDelegate();
 

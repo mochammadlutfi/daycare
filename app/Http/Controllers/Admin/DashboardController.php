@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Inertia\Inertia;
 
+
+// use App\Models\AntarJemput;
 class DashboardController extends Controller
 {
     /**
@@ -49,8 +51,8 @@ class DashboardController extends Controller
             ],
             [
                 'route' => 'admin.kegiatan.index',
-                'icon' => '<i class="si si-bag fa-2x"></i>',
-                'name' => 'Pengasuh',
+                'icon' => '<i class="si si-user fa-2x"></i>',
+                'name' => 'Pegawai',
                 'value' => DB::table('admins')->where('level', 'guru')->get()->count(),
             ],
             [
@@ -65,5 +67,14 @@ class DashboardController extends Controller
             'data' => $data,
         ]);
 
+    }
+
+
+    public function generator()
+    {
+        DB::table('antar_jemput')->insert([
+            'email' => 'kayla@example.com',
+            'votes' => 0
+        ]);
     }
 }

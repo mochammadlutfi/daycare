@@ -11,11 +11,11 @@
                 </div>
             </div>
             <div class="block block-rounded block-bordered">
-                <div class="block-content p-3">
+                <div class="block-content p-4 fs-sm">
                     <div class="border-bottom border-2 mb-4">
-                        <h3 class="h5 mb-2">1. Informasi Akun</h3>
+                        <h3 class="fs-5 mb-2">1. Informasi Akun</h3>
                     </div>
-                    <el-row :gutter="20">
+                    <el-row :gutter="20" class="mb-4">
                         <el-col :md="12">
                             <el-row class="mb-2" :gutter="10">
                                 <el-col :md="10">Nama Akun</el-col>
@@ -33,132 +33,21 @@
                             </el-row>
                         </el-col>
                     </el-row>
-                    <h3 class="h5 mb-2">2. Informasi Detail</h3>
-                    <el-row :gutter="20">
-                        <el-col :md="12">
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Nama Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.nama_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Tempat / Tanggal Lahir Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.tmp_lahir_ayah }} /
-                                        {{ data.detail.tgl_lahir_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">No HP Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.telp_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Pendidkan Terakhir Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.pendidikan_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Agama Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.agama_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Alamat Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.alamat_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Pekerjaan Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.pekerjaan_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Penghasilan Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.penghasilan_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Alamat Kantor Ayah</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.alamat_kantor_ayah }}</span>
-                                </el-col>
-                            </el-row>
-                        </el-col>
-                        <el-col :md="12">
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Nama Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.nama_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Tempat / Tanggal Lahir Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.tmp_lahir_ibu }} /
-                                        {{ data.detail.tgl_lahir_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">No HP Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.telp_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Pendidkan Terakhir Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.pendidikan_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Agama Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.agama_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Alamat Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.alamat_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Pekerjaan Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.pekerjaan_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Penghasilan Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.penghasilan_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                            <el-row class="mb-2" :gutter="10">
-                                <el-col :md="10">Alamat Kantor Ibu</el-col>
-                                <el-col :md="14">
-                                    : <span class="fw-semibold">{{ data.detail.alamat_kantor_ibu }}</span>
-                                </el-col>
-                            </el-row>
-                        </el-col>
-                    </el-row>
+                    <div class="border-bottom border-2 mb-4">
+                        <h3 class="fs-5 mb-2">2. Informasi Detail</h3>
+                    </div>
+                    <detail-ortu v-model="data.detail"/>
                 </div>
             </div>
         </div>
     </base-layout>
 </template>
 <script>
+import DetailOrtu from '@/Components/DetailOrtu.vue';
 import moment from 'moment';
 export default {
     components : {
+        DetailOrtu
     },
     data(){
         return {

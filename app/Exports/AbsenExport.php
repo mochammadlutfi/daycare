@@ -18,16 +18,20 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
+
 class AbsenExport implements FromCollection, WithHeadings, WithMapping, 
-WithEvents, WithStyles, WithTitle, WithCustomStartCell
+WithEvents, WithStyles, WithTitle, WithCustomStartCell, WithColumnWidths, ShouldAutoSize
 {    
     protected $headingLength;
-    private $rowNumber = 0;
+    private $rowNumber = 1;
     public function __construct($kelompok, $tgl)
     {
         $this->kelompok = $kelompok;
         $this->tgl = $tgl;
-        $this->headingLength = count($this->headings());
+        $this->headingLength = 0;
     }
 
     public function collection()
@@ -62,12 +66,10 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
         {
             $headings[] = $p->format('d');
         }
-
-        // $headings[] = 'H';
-        // $headings[] = 'I';
-        // $headings[] = 'S';
-        // $headings[] = 'A';
         $headings = array_merge($headings, ['H', 'I', 'S', 'A']);
+
+
+        $this->headingLength = count($headings);
         return $headings;
     }
 
@@ -90,15 +92,42 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
                         })
                         ->where('anak_id', $data->id)
                         ->first();
-            $content[] = $status ? $status->status : '-';
+            // $st = '';
+            //  = $status ? $status->status : '-';
+            if($status){
+                if($status->status == 'Hadir'){
+                    $st = 'H';
+                }else if($status->status == 'Izin'){
+                    $st = 'I';
+                }else if($status->status == 'Sakit'){
+                    $st = 'S';
+                }else if($status->status == 'Alpa'){
+                    $st = 'A';
+                }
+            }else{
+                $st = '-';
+            }
+            $content[] = $st;
         }
 
-        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Hadir')->count() ?? 0; // H
-        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Izin')->count() ?? 0; // I
-        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Sakit')->count() ?? 0; // S
-        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Alpa')->count() ?? 0; // A
+        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Hadir')->count() ?? '0'; // H
+        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Izin')->count() ?? '0'; // I
+        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Sakit')->count() ?? '0'; // S
+        $content[] = AbsenDetail::where('anak_id', $data->id)->where('status', 'Alpa')->count() ?? '0'; // A
 
         return $content;
+    }
+
+    private function getHeadingLength()
+    {
+        $columnLetter = '';
+        $columnNumber = $this->headingLength;
+        while ($columnNumber > 0) {
+            $remainder = ($columnNumber - 1) % 26;
+            $columnLetter = chr(65 + $remainder) . $columnLetter;
+            $columnNumber = (int)(($columnNumber - 1) / 26);
+        }
+        return $columnLetter;
     }
 
     public function registerEvents(): array
@@ -108,15 +137,14 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
 
                 $sheet = $event->sheet->getDelegate();
 
-                $highestColumn = chr(64 + $this->headingLength);
-
-                // $sheet->setAutoFilter('A7:'.chr(64 + $this->headingLength) . '7');
+                // $this->getHighetColumn() = chr(64 + $this->headingLength);
+                // dd($this->getHighetColumn());
                 // foreach (range('A', $sheet->getHighestColumn()) as $col) {
                 //     $sheet->getColumnDimension($col)->setAutoSize(true);
                 // }
 
                 // Merge cells for title
-                $sheet->mergeCells('A1:'.$highestColumn.'2');
+                $sheet->mergeCells('A1:'.$this->getHeadingLength().'2');
                 $sheet->setCellValue('A1', 'Data Absen');
                 $sheet->getStyle('A1')->applyFromArray([
                     'font' => [
@@ -134,17 +162,23 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
                     ],
                 ]);
 
+                $sheet->mergeCells('A1:'.$this->getHeadingLength().'2');
                 if($this->kelompok){
                     $kelompok = Kelompok::where('id', $this->kelompok)->first();
 
-                    $sheet->setCellValue('A4', 'Kelompok');
-                    $sheet->setCellValue('B4', 'Kelompok '. $kelompok->nama . ' ('. $kelompok->usia .')');
+                    $sheet->mergeCells('A4:G4');
+                    $sheet->setCellValue('A4', 'Kelompok : '.$kelompok->nama . ' ('. $kelompok->usia .')');
                 }
+
+                
+                $bln = Carbon::parse($this->tgl)->translatedFormat('F Y');
+                $sheet->mergeCells('A5:G5');
+                $sheet->setCellValue('A5', 'Bulan : '.$bln);
                 // Set header styles
 
                 // $sheet->setCellValue('A1', 'Data Anak');
 
-                $sheet->getStyle('A7:'.chr(64 + $this->headingLength) . '7')->applyFromArray([
+                $sheet->getStyle('A7:'.$this->getHeadingLength() . '7')->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'color' => ['argb' => 'FFFFFF'],
@@ -155,6 +189,15 @@ WithEvents, WithStyles, WithTitle, WithCustomStartCell
                     ],
                 ]);
             },
+        ];
+    }
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 4,
+            'B' => 33,
+            'C' => 5,
+            'D' => 5,         
         ];
     }
 

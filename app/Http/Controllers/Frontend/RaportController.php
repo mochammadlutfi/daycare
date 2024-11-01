@@ -71,13 +71,18 @@ class RaportController extends Controller
 
 
                 $data = new Raport();
-                $data->tgl = Carbon::parse($request->tgl);
+                $data->tgl_mulai = Carbon::parse($request->tgl[0]);
+                $data->tgl_selesai = Carbon::parse($request->tgl[1]);
                 $data->admin_id = $user->id;
                 $data->kelompok_id = $request->kelompok_id;
                 $data->anak_id = $request->anak_id;
                 $data->user_id = $anak->user_id;
                 $data->tinggi = $request->tinggi;
                 $data->berat = $request->berat;
+                $data->hadir = $request->hadir;
+                $data->izin = $request->izin;
+                $data->sakit = $request->sakit;
+                $data->alpa = $request->alpa;
                 $data->perkembangan_nilai_agama_dan_moral = $request->perkembangan_nilai_agama_dan_moral;
                 $data->perkembangan_sosial_emosional = $request->perkembangan_sosial_emosional;
                 $data->perkembangan_fisik_motorik = $request->perkembangan_fisik_motorik;
@@ -175,13 +180,18 @@ class RaportController extends Controller
 
 
                 $data = Raport::where('id', $id)->first();
-                $data->tgl = Carbon::parse($request->tgl);
+                $data->tgl_mulai = Carbon::parse($request->tgl[0]);
+                $data->tgl_selesai = Carbon::parse($request->tgl[1]);
                 $data->admin_id = $user->id;
                 $data->kelompok_id = $request->kelompok_id;
                 $data->anak_id = $request->anak_id;
                 $data->user_id = $anak->user_id;
                 $data->tinggi = $request->tinggi;
                 $data->berat = $request->berat;
+                $data->hadir = $request->hadir;
+                $data->izin = $request->izin;
+                $data->sakit = $request->sakit;
+                $data->alpa = $request->alpa;
                 $data->perkembangan_nilai_agama_dan_moral = $request->perkembangan_nilai_agama_dan_moral;
                 $data->perkembangan_sosial_emosional = $request->perkembangan_sosial_emosional;
                 $data->perkembangan_fisik_motorik = $request->perkembangan_fisik_motorik;
