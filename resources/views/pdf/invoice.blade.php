@@ -83,8 +83,10 @@
             <thead>
                 <tr>
                     <th width="5%">#</th>
-                    <th width="60%">Keterangan</th>
-                    <th>Jumlah</th>
+                    <th width="45%">Keterangan</th>
+                    <th>Harga Satuan</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,12 +95,14 @@
                     <td>{{ $loop->index+1 }}</td>
                     <td>{{ $d->tipe }}</td>
                     <td>Rp {{ number_format($d->harga,0,',','.') }}</td>
+                    <td>{{ $d->qty }}</td>
+                    <td>Rp {{ number_format($d->harga*$d->qty,0,',','.') }}</td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2" class="text-right">Total</td>
+                    <td colspan="4" class="text-right">Total</td>
                     <td>Rp. {{ number_format($data->total,0,',','.') }}</td>
                 </tr>
             </tfoot>

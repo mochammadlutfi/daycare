@@ -69,7 +69,7 @@
                                 <p class="my-auto text-xs">Menampilkan {{ from }} sampai {{ to }} dari {{ total }}</p>
                             </el-col>
                             <el-col :lg="12" class="text-end">
-                                <el-pagination class="float-end" background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="page" @current-change="fetchData"/>
+                                <el-pagination class="float-end" background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="params.page" @current-change="fetchData"/>
                             </el-col>
                         </el-row>
                     </div>

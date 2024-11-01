@@ -15,6 +15,8 @@ use App\Models\InvoiceDetail;
 use App\Exports\InvoiceExport;
 use Excel;
 use App\Models\Anak;
+
+use PDF;
 class InvoiceController extends Controller
 {
     /**
@@ -41,79 +43,79 @@ class InvoiceController extends Controller
     public function show($id)
     {
 
-        // $invoice = Invoice
-            DB::beginTransaction();
-            try{
-        $anak = Anak::orderBy('nama', 'ASC')->get();
+    //     // $invoice = Invoice
+    //         DB::beginTransaction();
+    //         try{
+    //     $anak = Anak::orderBy('nama', 'ASC')->get();
 
-        foreach($anak as $a){
+    //     foreach($anak as $a){
             
-            $invoice = new Invoice();
-            $invoice->nomor = $this->getNomor();
-            $invoice->tgl = '2024-09-23';
-            $invoice->user_id = $a->user_id;
-            $invoice->anak_id = $a->id;
-            $invoice->uid = uniqid();
-            $invoice->metode = 'Tunai';
-            $invoice->status = 'paid';
-            $invoice->tgl_tempo = '2024-10-07';
-            $invoice->total = 0;
-            $invoice->save();
+    //         $invoice = new Invoice();
+    //         $invoice->nomor = $this->getNomor();
+    //         $invoice->tgl = '2024-09-23';
+    //         $invoice->user_id = $a->user_id;
+    //         $invoice->anak_id = $a->id;
+    //         $invoice->uid = uniqid();
+    //         $invoice->metode = 'Tunai';
+    //         $invoice->status = 'paid';
+    //         $invoice->tgl_tempo = '2024-10-07';
+    //         $invoice->total = 0;
+    //         $invoice->save();
 
 
-            $linesData = collect([
-                [
-                    'tipe' => 'SPP',
-                    'harga' => 1200000,
-                    'qty' => 1,
-                ]
-            ]);
+    //         $linesData = collect([
+    //             [
+    //                 'tipe' => 'SPP',
+    //                 'harga' => 1200000,
+    //                 'qty' => 1,
+    //             ]
+    //         ]);
 
-            if($a->id == 17){
-                $linesData->push(
-                    [
-                        'tipe' => 'Laundry',
-                        'harga' => 7000,
-                        'qty' => 20
-                    ]
-                );
-                $linesData->push(
-                    [
-                        'tipe' => 'Antar Jemput',
-                        'harga' => 10000,
-                        'qty' => 40
-                    ]
-                );
-            }
-            $total = 0;
+    //         if($a->id == 18){
+    //             $linesData->push(
+    //                 [
+    //                     'tipe' => 'Laundry',
+    //                     'harga' => 7000,
+    //                     'qty' => 20
+    //                 ]
+    //             );
+    //             $linesData->push(
+    //                 [
+    //                     'tipe' => 'Antar Jemput',
+    //                     'harga' => 10000,
+    //                     'qty' => 40
+    //                 ]
+    //             );
+    //         }
+    //         $total = 0;
 
-            foreach($linesData->all() as $i){
-                $line = new InvoiceDetail();
-                // dd($i['tipe']);
-                $line->tipe = $i['tipe'];
-                $line->harga = $i['harga'];
-                $line->qty = $i['qty'];
-                $invoice->detail()->save($line);
+    //         foreach($linesData->all() as $i){
+    //             $line = new InvoiceDetail();
+    //             // dd($i['tipe']);
+    //             $line->tipe = $i['tipe'];
+    //             $line->harga = $i['harga'];
+    //             $line->qty = $i['qty'];
+    //             $invoice->detail()->save($line);
 
-                $total += $i['harga'] * $i['qty'];
-            }
-            $invoice->total = $total;
-            $invoice->save();
-        }
+    //             $total += $i['harga'] * $i['qty'];
+    //         }
+    //         $invoice->total = $total;
+    //         $invoice->save();
+    //     }
 
-    }catch(\QueryException $e){
-        DB::rollback();
-        dd($e);
-    }
-    DB::commit();
-    return redirect()->route('admin.invoice.index');
+    // }catch(\QueryException $e){
+    //     DB::rollback();
+    //     dd($e);
+    // }
+    // DB::commit();
+    // return redirect()->route('admin.invoice.index');
 
-        // $data = Invoice::with(['user', 'anak', 'detail'])
-        // ->where('id', $id)->first();
+        $data = Invoice::with(['user', 'anak', 'detail'])
+        ->where('id', $id)->first();
 
-        // return Inertia::render('Invoice/Show',[
-        //     'data' => $data
-        // ]);
+        return Inertia::render('Invoice/Show',[
+            'data' => $data
+        ]);
     }
 
     /**
@@ -216,6 +218,19 @@ class InvoiceController extends Controller
         return Excel::download(new InvoiceExport($kelompok, $paket), 'Data Report Invoice.xlsx');
     }
 
+    public function pdf($id)
+    {
+        $data = Invoice::with(['user','detail'])->where('id', $id)
+        ->first();
+
+        $pdf = PDF::loadView('pdf.invoice', [
+            'data' => $data,
+        ], [ ], [
+            'format' => 'A4-P'
+        ]);
+
+        return $pdf->stream('Invoice '. $data->nomor .'.pdf');
+    }
     
     private function getNomor()
     {

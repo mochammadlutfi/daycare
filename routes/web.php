@@ -213,6 +213,7 @@ Route::prefix('admin')->namespace('Admin')->name('admin.')->group(function(){
             Route::get('/data', 'InvoiceController@data')->name('data');
             Route::get('/report', 'InvoiceController@report')->name('report');
             Route::get('/{id}', 'InvoiceController@show')->name('show');
+            Route::get('/{id}/pdf', 'InvoiceController@pdf')->name('pdf');
             Route::get('/{id}/edit','InvoiceController@edit')->name('edit');
             Route::post('/{id}/update','InvoiceController@update')->name('update');
             Route::delete('/{id}/hapus','InvoiceController@destroy')->name('delete');

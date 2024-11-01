@@ -38,11 +38,11 @@ class MenuHelper
             "to" => "admin.kegiatan.index",
         ]);
 
-        $menuData->push([
-            'icon' => 'fa fa-calendar-alt',
-            "name" => "Jadwal",
-            "to" => "admin.jadwal.index",
-        ]);
+        // $menuData->push([
+        //     'icon' => 'fa fa-calendar-alt',
+        //     "name" => "Jadwal",
+        //     "to" => "admin.jadwal.index",
+        // ]);
 
         $menuData->push([
             "svg" => true,

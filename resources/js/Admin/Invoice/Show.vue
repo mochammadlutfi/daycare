@@ -4,7 +4,9 @@
             <div class="content-heading d-flex justify-content-between align-items-center">
                 <span>Detail Invoice</span>
                 <div class="space-x-1">
-
+                    <a :href="route('admin.invoice.pdf', {id : data.id})" class="ep-button ep-button--primary" target="_blank">
+                        Download Invoice
+                    </a>
                 </div>
             </div>
             <div class="block rounded-2">
@@ -81,7 +83,9 @@
                                 <tr class="text-dark">
                                     <th class="text-center" style="width: 60px;"></th>
                                     <th>Keterangan</th>
-                                    <th class="text-end" style="width: 120px;">Jumlah</th>
+                                    <th class="text-end" style="width: 180px;">Harga Satuan</th>
+                                    <th class="text-end" style="width: 120px;">Qty</th>
+                                    <th class="text-end" style="width: 120px;">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,11 +98,13 @@
                                         </div>
                                     </td>
                                     <td class="text-end">{{ currency(d.harga) }}</td>
+                                    <td class="text-end">{{ d.qty }}</td>
+                                    <td class="text-end">{{ currency(d.harga*d.qty) }}</td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="2" class="fw-bold text-uppercase text-end">Total</td>
+                                    <td colspan="4" class="fw-bold text-uppercase text-end">Total</td>
                                     <td class="fw-bold text-end">{{ currency(data.total)}}</td>
                                 </tr>
                             </tfoot>
